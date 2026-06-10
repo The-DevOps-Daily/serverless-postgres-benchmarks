@@ -216,3 +216,12 @@ svg text {
 .method-col p { margin: 0; font-size: 13px; color: var(--text-dim); }
 .method-col a { color: var(--amber); text-decoration: none; }
 .method-col a:hover { text-decoration: underline; }
+
+/* clickable legend */
+.legend-toggle { cursor: pointer; user-select: none; border-radius: 6px; padding: 2px 6px; margin: -2px -6px; transition: background 0.15s, opacity 0.2s; }
+.legend-toggle:hover { background: rgba(255, 255, 255, 0.05); }
+.legend-off { opacity: 0.35; text-decoration: line-through; }
+.legend-hint { margin-left: auto; font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-faint); }
+
+/* carbon ad slot */
+#ad-slot { margin-top: 28px; display: flex; justify-content: center; }

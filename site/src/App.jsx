@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { embeddedResults, loadResults, samplePoints, fmtMs } from "./data.js";
 import { BarChart, StripPlot, HistoryChart, Legend } from "./charts.jsx";
 
@@ -31,17 +31,36 @@ function Card({ tag, runs, title, sub, children }) {
   );
 }
 
-/** Slot for the ad unit; swap the placeholder for the Carbon script tag on deploy. */
+/** Carbon ad unit, loaded once at the very bottom of the page. */
 function AdSlot() {
-  return <div id="ad-slot" aria-hidden="true" />;
+  const ref = useRef(null);
+  useEffect(() => {
+    if (!ref.current || document.getElementById("_carbonads_js")) return;
+    const script = document.createElement("script");
+    script.async = true;
+    script.type = "text/javascript";
+    script.src = "//cdn.carbonads.com/carbon.js?serve=CE7DL53M&placement=bobbyilievcom&format=cover";
+    script.id = "_carbonads_js";
+    ref.current.appendChild(script);
+  }, []);
+  return <div id="ad-slot" ref={ref} style={{ minHeight: 280 }} />;
 }
 
 export default function App() {
   const [data, setData] = useState(embeddedResults);
   const [error, setError] = useState(null);
+  const [dimmed, setDimmed] = useState(new Set());
   useEffect(() => {
     if (!data) loadResults().then(setData, (e) => setError(String(e)));
   }, []);
+
+  const toggleSeries = (name) =>
+    setDimmed((prev) => {
+      const next = new Set(prev);
+      if (next.has(name)) next.delete(name);
+      else next.add(name);
+      return next;
+    });
 
   if (error) return <main className="wrap"><p>Failed to load results: {error}</p></main>;
   if (!data) return <main className="wrap" />;
@@ -66,6 +85,7 @@ export default function App() {
     { label: "Supabase · transaction pooler", r: get("supabase", "pooled-query-latency"), color: COLORS.supabase },
   ].map((x) => ({
     label: x.label,
+    series: x.label.startsWith("Neon") ? "Neon" : "Supabase",
     color: x.color,
     median: x.r.stats.medianMs,
     p95: x.r.stats.p95Ms,
@@ -75,8 +95,8 @@ export default function App() {
   }));
 
   const historySeries = [
-    { name: "Neon query latency", color: NEON_HEX, points: hist("neon", "query-latency").map((p) => ({ date: p.date, v: p.medianMs })) },
-    { name: "Supabase query latency", color: SUPA_HEX, points: hist("supabase", "query-latency").map((p) => ({ date: p.date, v: p.medianMs })) },
+    { name: "Neon", color: NEON_HEX, points: hist("neon", "query-latency").map((p) => ({ date: p.date, v: p.medianMs })) },
+    { name: "Supabase", color: SUPA_HEX, points: hist("supabase", "query-latency").map((p) => ({ date: p.date, v: p.medianMs })) },
   ].filter((s) => s.points.length > 0);
 
   return (
@@ -117,14 +137,18 @@ export default function App() {
         tag="select 1 · full connect cycle"
         runs={`${nq.runs} runs each`}
         title="Query latency"
-        sub="Connect + TLS + auth + one query, cold connection each run. Bar is the median; tick is p95. Hover any row for the full spread."
+        sub="Connect + TLS + auth + one query, cold connection each run. Bar is the median, amber tick is p95, the faint line spans min to max. Hover any row for the full spread."
       >
-        <BarChart rows={latencyRows} />
-        <Legend items={[
-          { color: NEON_HEX, label: "Neon" },
-          { color: SUPA_HEX, label: "Supabase" },
-          { color: "#f59e0b", label: "p95" },
-        ]} />
+        <BarChart rows={latencyRows} dimmed={dimmed} />
+        <Legend
+          onToggle={toggleSeries}
+          dimmed={dimmed}
+          items={[
+            { color: NEON_HEX, label: "Neon" },
+            { color: SUPA_HEX, label: "Supabase" },
+            { color: "#f59e0b", label: "p95", toggle: false },
+          ]}
+        />
       </Card>
 
       <div className="grid-2">
@@ -134,7 +158,7 @@ export default function App() {
           title="Project creation"
           sub="Time until a brand-new project answers SQL. Every dot is one run; hover for its exact time."
         >
-          <StripPlot width={620} series={[
+          <StripPlot width={620} showDelta series={[
             { label: "Neon", samples: samplePoints(nc), median: nc.stats.medianMs, color: COLORS.neon },
             { label: "Supabase", samples: samplePoints(sc), median: sc.stats.medianMs, color: COLORS.supabase },
           ]} />
@@ -173,11 +197,15 @@ export default function App() {
             : "Median query latency per benchmark session. A flat line is the expected (and boring) result; divergence is news."
         }
       >
-        <HistoryChart series={historySeries} />
-        <Legend items={[
-          { color: NEON_HEX, label: "Neon" },
-          { color: SUPA_HEX, label: "Supabase" },
-        ]} />
+        <HistoryChart series={historySeries} dimmed={dimmed} />
+        <Legend
+          onToggle={toggleSeries}
+          dimmed={dimmed}
+          items={[
+            { color: NEON_HEX, label: "Neon" },
+            { color: SUPA_HEX, label: "Supabase" },
+          ]}
+        />
       </Card>
 
       <section className="method">
