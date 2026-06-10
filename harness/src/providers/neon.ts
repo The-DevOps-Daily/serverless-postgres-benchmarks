@@ -105,7 +105,88 @@ export const neon: Provider = {
   async deleteBranch(project: BenchProject, branchId: string): Promise<void> {
     await api(`/projects/${project.id}/branches/${branchId}`, { method: "DELETE" });
   },
+
+  async resizeCompute(project: BenchProject, direction: "up" | "down"): Promise<void> {
+    const { endpoints } = await api<{ endpoints: Array<NeonEndpoint & { type: string }> }>(
+      `/projects/${project.id}/endpoints`,
+    );
+    const primary = endpoints.find((e) => e.type === "read_write") ?? endpoints[0];
+    if (!primary) throw new Error("Neon: no endpoint to resize");
+    const limits =
+      direction === "up"
+        ? { autoscaling_limit_min_cu: 1, autoscaling_limit_max_cu: 4 }
+        : { autoscaling_limit_min_cu: 0.25, autoscaling_limit_max_cu: 2 };
+    const res = await api<{ operations?: Array<{ id: string }> }>(
+      `/projects/${project.id}/endpoints/${primary.id}`,
+      { method: "PATCH", body: JSON.stringify({ endpoint: limits }) },
+    );
+    await waitForOperations(project.id, res.operations);
+  },
+
+  async createReadReplica(project: BenchProject): Promise<{ id: string; connectionString: string }> {
+    const { branches } = await api<{ branches: Array<{ id: string; default: boolean }> }>(
+      `/projects/${project.id}/branches`,
+    );
+    const main = branches.find((b) => b.default) ?? branches[0];
+    if (!main) throw new Error("Neon: no branch for replica");
+    const created = await api<{
+      endpoint: { id: string };
+      operations?: Array<{ id: string }>;
+    }>(`/projects/${project.id}/endpoints`, {
+      method: "POST",
+      body: JSON.stringify({
+        endpoint: { branch_id: main.id, type: "read_only", autoscaling_limit_min_cu: 0.25, autoscaling_limit_max_cu: 2 },
+      }),
+    });
+    await waitForOperations(project.id, created.operations);
+    const { uri } = await api<{ uri: string }>(
+      `/projects/${project.id}/connection_uri?endpoint_id=${created.endpoint.id}&database_name=neondb&role_name=neondb_owner`,
+    );
+    await firstSuccessfulQuery(uri);
+    return { id: created.endpoint.id, connectionString: uri };
+  },
+
+  async deleteReadReplica(project: BenchProject, replicaId: string): Promise<void> {
+    await api(`/projects/${project.id}/endpoints/${replicaId}`, { method: "DELETE" });
+  },
+
+  async restore(project: BenchProject, timestamp: string): Promise<void> {
+    const { branches } = await api<{ branches: Array<{ id: string; default: boolean }> }>(
+      `/projects/${project.id}/branches`,
+    );
+    const main = branches.find((b) => b.default) ?? branches[0];
+    if (!main) throw new Error("Neon: no branch to restore");
+    const res = await api<{ operations?: Array<{ id: string }> }>(
+      `/projects/${project.id}/branches/${main.id}/restore`,
+      {
+        method: "POST",
+        body: JSON.stringify({
+          source_branch_id: main.id,
+          source_timestamp: timestamp,
+          preserve_under_name: `bench-pre-${Math.floor(performance.now()).toString(36)}`,
+        }),
+      },
+    );
+    await waitForOperations(project.id, res.operations);
+  },
 };
+
+async function waitForOperations(
+  projectId: string,
+  operations: Array<{ id: string }> | undefined,
+): Promise<void> {
+  for (const op of operations ?? []) {
+    await pollUntil(async () => {
+      const { operation } = await api<{ operation: { status: string } }>(
+        `/projects/${projectId}/operations/${op.id}`,
+      );
+      if (["failed", "error", "cancelled"].includes(operation.status)) {
+        throw new Error(`Neon operation ${op.id} ${operation.status}`);
+      }
+      return operation.status === "finished" || operation.status === "skipped";
+    });
+  }
+}
 
 /** Neon pooled host is the endpoint host with a -pooler suffix. */
 function toPooled(uri: string): string {

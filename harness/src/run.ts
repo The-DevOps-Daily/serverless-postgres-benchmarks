@@ -1,7 +1,18 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { config } from "./config.js";
-import { ALL_OPS, branchOp, coldStartOp, createProjectOp, queryLatencyOp, type OpName } from "./ops.js";
+import {
+  ALL_OPS,
+  branchOp,
+  coldStartOp,
+  concurrencyOp,
+  createProjectOp,
+  queryLatencyOp,
+  replicaOp,
+  resizeOp,
+  restoreOp,
+  type OpName,
+} from "./ops.js";
 import { neon } from "./providers/neon.js";
 import { supabase } from "./providers/supabase.js";
 import type { OpResult, Provider, ProviderName, ResultFile } from "./types.js";
@@ -11,11 +22,12 @@ interface Args {
   op: OpName;
   runs: number;
   seedRows: number;
+  clients: number;
   out?: string;
 }
 
 function parseArgs(argv: string[]): Args {
-  const args: Partial<Args> = { runs: 20, seedRows: 100_000 };
+  const args: Partial<Args> = { runs: 20, seedRows: 100_000, clients: 100 };
   for (let i = 0; i < argv.length; i++) {
     const flag = argv[i];
     const value = argv[i + 1];
@@ -38,6 +50,10 @@ function parseArgs(argv: string[]): Args {
         break;
       case "--seed-rows":
         args.seedRows = Number(value);
+        i++;
+        break;
+      case "--clients":
+        args.clients = Number(value);
         i++;
         break;
       case "--out":
@@ -86,6 +102,21 @@ async function main() {
       break;
     case "branch":
       result = await branchOp(provider, args.runs, args.seedRows);
+      break;
+    case "branch-with-data":
+      result = await branchOp(provider, args.runs, args.seedRows, { withData: true });
+      break;
+    case "resize":
+      result = await resizeOp(provider, args.runs);
+      break;
+    case "replica":
+      result = await replicaOp(provider, args.runs);
+      break;
+    case "restore":
+      result = await restoreOp(provider, args.runs, args.seedRows);
+      break;
+    case "concurrency":
+      result = await concurrencyOp(provider, args.runs, args.clients);
       break;
   }
 

@@ -15,6 +15,9 @@ export interface BenchProject {
    * carries the session pooler there and this carries the direct host).
    */
   directConnectionString?: string;
+  /** Database password, kept for providers whose secondary connection
+   * strings come back with a placeholder (Supabase read replicas). */
+  dbPass?: string;
 }
 
 export interface Provider {
@@ -34,8 +37,19 @@ export interface Provider {
    * Create a database branch off the project's default branch, when
    * supported, resolving when the branch accepts SQL connections.
    */
-  createBranch?(project: BenchProject, branchName: string): Promise<BenchProject>;
+  createBranch?(project: BenchProject, branchName: string, options?: { withData?: boolean }): Promise<BenchProject>;
   deleteBranch?(project: BenchProject, branchId: string): Promise<void>;
+  /**
+   * Change the project's compute size/limits and resolve when the change is
+   * applied (per the management API). The op layer measures SQL downtime
+   * around this separately.
+   */
+  resizeCompute?(project: BenchProject, direction: "up" | "down"): Promise<void>;
+  /** Create a read replica, resolving when it answers SQL. Returns its id + connection string. */
+  createReadReplica?(project: BenchProject): Promise<{ id: string; connectionString: string }>;
+  deleteReadReplica?(project: BenchProject, replicaId: string): Promise<void>;
+  /** Point-in-time restore of the project's main branch, resolving when complete. */
+  restore?(project: BenchProject, timestamp: string): Promise<void>;
 }
 
 export interface Sample {

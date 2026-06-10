@@ -1,6 +1,6 @@
 import { BENCH_PREFIX } from "./config.js";
 import { queryOnce, firstSuccessfulQuery, tlsFor } from "./providers/sql.js";
-import { sleep, timeOp } from "./timing.js";
+import { percentile, sleep, timeOp } from "./timing.js";
 import type { OpResult, Provider } from "./types.js";
 
 export type OpName =
@@ -9,7 +9,12 @@ export type OpName =
   | "pooled-query-latency"
   | "direct-query-latency"
   | "cold-start"
-  | "branch";
+  | "branch"
+  | "branch-with-data"
+  | "resize"
+  | "replica"
+  | "restore"
+  | "concurrency";
 
 export const ALL_OPS: OpName[] = [
   "create-project",
@@ -18,6 +23,11 @@ export const ALL_OPS: OpName[] = [
   "direct-query-latency",
   "cold-start",
   "branch",
+  "branch-with-data",
+  "resize",
+  "replica",
+  "restore",
+  "concurrency",
 ];
 
 export type LatencyTarget = "primary" | "pooled" | "direct";
@@ -101,17 +111,25 @@ export async function coldStartOp(provider: Provider, runs: number): Promise<OpR
 /**
  * branch: time creating a database branch until it answers SQL, then delete.
  * The parent project carries seed data so the branch copies something real.
+ * withData controls whether the provider is asked to copy the data
+ * (Supabase Pro exposes this as a flag; Neon branches always carry data).
  */
-export async function branchOp(provider: Provider, runs: number, seedRows: number): Promise<OpResult> {
+export async function branchOp(
+  provider: Provider,
+  runs: number,
+  seedRows: number,
+  { withData = false }: { withData?: boolean } = {},
+): Promise<OpResult> {
   if (!provider.createBranch || !provider.deleteBranch) {
     throw new Error(`${provider.name} branching is not implemented (paid plan required?)`);
   }
   const project = await provider.createProject(uniqueName("brsrc", 0));
   await seed(project.connectionString, seedRows);
+  const opName: OpName = withData ? "branch-with-data" : "branch";
   try {
-    return await timeOp({ op: "branch", provider: provider.name, runs, pauseMs: 3000 }, async (run) => {
+    return await timeOp({ op: opName, provider: provider.name, runs, pauseMs: 3000 }, async (run) => {
       const t0 = performance.now();
-      const branch = await provider.createBranch!(project, uniqueName("br", run));
+      const branch = await provider.createBranch!(project, uniqueName("br", run), { withData });
       const totalMs = performance.now() - t0;
       try {
         return { branchQueryableMs: totalMs };
@@ -119,6 +137,145 @@ export async function branchOp(provider: Provider, runs: number, seedRows: numbe
         await provider.deleteBranch!(project, branch.id);
       }
     });
+  } finally {
+    await provider.deleteProject(project.id);
+  }
+}
+
+/**
+ * resize: change compute size up then back down, alternating per run.
+ * Measures (a) the management-API completion time and (b) the actual SQL
+ * unavailability window, sampled by probing `select 1` every 250ms.
+ */
+export async function resizeOp(provider: Provider, runs: number): Promise<OpResult> {
+  if (!provider.resizeCompute) {
+    throw new Error(`${provider.name} compute resize is not implemented`);
+  }
+  const project = await provider.createProject(uniqueName("rsz", 0));
+  try {
+    return await timeOp({ op: "resize", provider: provider.name, runs, pauseMs: 8000 }, async (run) => {
+      const direction = run % 2 === 0 ? "up" : "down";
+      // probe in the background to measure the downtime window
+      let firstFailure = 0;
+      let lastFailure = 0;
+      let probing = true;
+      const probe = (async () => {
+        while (probing) {
+          const at = performance.now();
+          try {
+            await queryOnce(project.connectionString);
+          } catch {
+            if (!firstFailure) firstFailure = at;
+            lastFailure = performance.now();
+          }
+          await sleep(250);
+        }
+      })();
+
+      const t0 = performance.now();
+      await provider.resizeCompute!(project, direction);
+      const apiMs = performance.now() - t0;
+      // keep probing briefly so we catch the tail of any restart
+      await sleep(3000);
+      probing = false;
+      await probe;
+      await firstSuccessfulQuery(project.connectionString);
+      return {
+        apiMs,
+        downtimeMs: firstFailure ? Math.max(0, lastFailure - firstFailure) + 250 : 0,
+      };
+    });
+  } finally {
+    await provider.deleteProject(project.id);
+  }
+}
+
+/**
+ * replica: time creating a read replica until it answers SQL, then remove it.
+ */
+export async function replicaOp(provider: Provider, runs: number): Promise<OpResult> {
+  if (!provider.createReadReplica || !provider.deleteReadReplica) {
+    throw new Error(`${provider.name} read replicas are not implemented`);
+  }
+  const project = await provider.createProject(uniqueName("repl", 0));
+  await seed(project.connectionString, 10_000);
+  try {
+    return await timeOp({ op: "replica", provider: provider.name, runs, pauseMs: 10_000 }, async () => {
+      const t0 = performance.now();
+      const replica = await provider.createReadReplica!(project);
+      const totalMs = performance.now() - t0;
+      try {
+        return { replicaQueryableMs: totalMs };
+      } finally {
+        await provider.deleteReadReplica!(project, replica.id);
+        await sleep(5000);
+      }
+    });
+  } finally {
+    await provider.deleteProject(project.id);
+  }
+}
+
+/**
+ * restore: point-in-time restore of the main branch to ~60s ago, timed until
+ * the management API reports completion and SQL answers again.
+ */
+export async function restoreOp(provider: Provider, runs: number, seedRows: number): Promise<OpResult> {
+  if (!provider.restore) {
+    throw new Error(`${provider.name} restore is not implemented (or is a paid add-on we skip)`);
+  }
+  const project = await provider.createProject(uniqueName("rst", 0));
+  await seed(project.connectionString, seedRows);
+  // let the history accumulate past our restore target
+  await sleep(90_000);
+  try {
+    return await timeOp({ op: "restore", provider: provider.name, runs, pauseMs: 15_000 }, async () => {
+      const target = new Date(Date.now() - 60_000).toISOString();
+      const t0 = performance.now();
+      await provider.restore!(project, target);
+      const apiMs = performance.now() - t0;
+      const sqlMs = await firstSuccessfulQuery(project.connectionString);
+      return { apiMs, sqlReadyMs: apiMs + sqlMs };
+    });
+  } finally {
+    await provider.deleteProject(project.id);
+  }
+}
+
+/**
+ * concurrency: a burst of N simultaneous cold connections through the
+ * TRANSACTION pooler, each doing connect + select 1 + disconnect. This is
+ * the serverless stampede: N functions waking at once. Reported per wave:
+ * total wall time, per-connection median/p95, and refusals (hitting the
+ * pooler's client cap is a finding, not an error).
+ */
+export async function concurrencyOp(provider: Provider, runs: number, clients: number): Promise<OpResult> {
+  const project = await provider.createProject(uniqueName("conc", 0));
+  const connectionString = project.pooledConnectionString ?? project.connectionString;
+  await queryOnce(connectionString);
+  await queryOnce(connectionString);
+  try {
+    return await timeOp(
+      { op: "concurrency", provider: provider.name, runs, pauseMs: 8000 },
+      async () => {
+        const outcomes = await Promise.allSettled(
+          Array.from({ length: clients }, () => queryOnce(connectionString)),
+        );
+        const ok = outcomes
+          .filter((o): o is PromiseFulfilledResult<number> => o.status === "fulfilled")
+          .map((o) => o.value)
+          .sort((a, b) => a - b);
+        const refused = outcomes.length - ok.length;
+        if (ok.length === 0) throw new Error(`all ${clients} connections failed`);
+        return {
+          clients,
+          refused,
+          connMedianMs: Math.round(percentile(ok, 50) * 10) / 10,
+          connP95Ms: Math.round(percentile(ok, 95) * 10) / 10,
+          connMaxMs: Math.round((ok[ok.length - 1] ?? 0) * 10) / 10,
+        };
+      },
+    );
   } finally {
     await provider.deleteProject(project.id);
   }
