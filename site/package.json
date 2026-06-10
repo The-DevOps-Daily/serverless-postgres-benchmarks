@@ -1,0 +1,21 @@
+{
+  "name": "@devops-daily/postgres-bench-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "predev": "node copy-results.mjs",
+    "dev": "vite",
+    "prebuild": "node copy-results.mjs",
+    "build": "vite build",
+    "preview": "vite preview",
+    "snapshot": "node build-snapshot.mjs"
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "vite": "^5.4.11"
+  }
+}

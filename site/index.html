@@ -5,78 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Serverless Postgres Benchmarks: Neon vs Supabase</title>
 <meta name="description" content="Reproducible operational benchmarks for Neon and Supabase: query latency, project creation, cold starts, branching. Raw data included." />
-<link rel="stylesheet" href="fonts.css" />
-<link rel="stylesheet" href="styles.css" />
+<link rel="stylesheet" href="./fonts.css" />
 </head>
 <body>
-<main class="wrap">
-  <header class="hero">
-    <p class="eyebrow">The DevOps Daily &middot; Serverless Postgres Benchmarks</p>
-    <h1 class="title">Neon vs Supabase, measured<span class="accent">.</span></h1>
-    <p class="lede">
-      Every number below is the median of repeated runs against real projects in the same
-      AWS region, timed from a client in the same metro. Raw samples ship in the repo;
-      nothing here is quoted from a pricing page.
-    </p>
-    <div class="meta" id="meta"></div>
-  </header>
-
-  <section class="stats" id="stat-cards"></section>
-
-  <section class="card">
-    <div class="card-head">
-      <span class="card-tag">select 1 &middot; full connect cycle</span>
-      <span class="card-runs" id="latency-runs"></span>
-    </div>
-    <h2 class="card-title">Query latency</h2>
-    <p class="card-sub">Connect + TLS + auth + one query, cold connection each run. Bar is the median; tick is p95.</p>
-    <div id="chart-latency"></div>
-  </section>
-
-  <div class="grid-2">
-    <section class="card">
-      <div class="card-head">
-        <span class="card-tag">api call &rarr; first query</span>
-        <span class="card-runs" id="create-runs"></span>
-      </div>
-      <h2 class="card-title">Project creation</h2>
-      <p class="card-sub">Time until a brand-new project answers SQL. Every dot is one run.</p>
-      <div id="chart-create"></div>
-    </section>
-
-    <section class="card">
-      <div class="card-head">
-        <span class="card-tag">scale-to-zero wake</span>
-        <span class="card-runs" id="cold-runs"></span>
-      </div>
-      <h2 class="card-title">Neon cold start</h2>
-      <p class="card-sub">First query against a suspended compute. Docs say 300&ndash;500&nbsp;ms typical.</p>
-      <div id="chart-cold"></div>
-    </section>
-  </div>
-
-  <section class="card">
-    <div class="card-head">
-      <span class="card-tag">copy-on-write &middot; 100k-row parent</span>
-      <span class="card-runs" id="branch-runs"></span>
-    </div>
-    <h2 class="card-title">Neon database branch, to queryable</h2>
-    <p class="card-sub">
-      A writable branch carrying the parent's full dataset. Supabase branching requires a
-      paid plan and starts without data; it will appear here once the paid-tier runs land.
-    </p>
-    <div id="chart-branch"></div>
-  </section>
-
-  <footer class="foot">
-    <p>
-      Method: every operation timed across its full run count, raw samples committed,
-      medians and p95 reported, resources torn down after every run. Free plans on both
-      platforms. Read the harness and rerun it yourself:
-      <a href="https://github.com/The-DevOps-Daily/serverless-postgres-benchmarks">The-DevOps-Daily/serverless-postgres-benchmarks</a>.
-    </p>
-  </footer>
-</main>
-<script type="module" src="app.js"></script>
+<div id="root"></div>
+<script type="module" src="/src/main.jsx"></script>
 </body>
 </html>

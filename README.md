@@ -26,8 +26,13 @@ The harness is a small TypeScript runner that drives each platform's management 
 ```
 harness/    TypeScript runner, provider adapters, operations
 results/    dated raw results (JSON) with environment metadata
-site/       static dashboard rendering the results (GitHub Pages)
+site/       results dashboard (Vite + React, hand-rolled SVG charts)
 ```
+
+The dashboard builds with `npm run build` in `site/` (output `site/dist/`); the results
+JSON is copied in as static assets so the deploy is self-contained. On Cloudflare Pages
+set the root directory to `site`, build command `npm run build`, output `dist`.
+`npm run snapshot` produces a single-file `snapshot.html` that renders without a server.
 
 ## Running it
 
