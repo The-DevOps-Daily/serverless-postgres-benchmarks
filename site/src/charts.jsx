@@ -356,3 +356,79 @@ export function Legend({ items, onToggle, dimmed = new Set() }) {
     </div>
   );
 }
+
+/* ------------------------------------------------------------------ */
+/* CDF: percentile curves from raw samples, one line per path          */
+/* series: {name, color, dash?, samples: number[]}                     */
+/* ------------------------------------------------------------------ */
+
+export function CdfChart({ series, width = 980, dimmed = new Set() }) {
+  const tooltip = useTooltip();
+  const height = 300;
+  const padL = 44, padR = 18, padT = 14, padB = 32;
+  const all = series.flatMap((s) => s.samples);
+  const minV = Math.min(...all) * 0.96;
+  const maxV = Math.max(...all) * 1.02;
+  const x = (v) => padL + ((v - minV) / (maxV - minV)) * (width - padL - padR);
+  const y = (pct) => padT + (1 - pct / 100) * (height - padT - padB);
+  const xTicks = niceTicks(maxV).filter((v) => v >= minV);
+
+  return (
+    <ChartShell tooltip={tooltip}>
+      <svg viewBox={`0 0 ${width} ${height}`} width="100%">
+        {/* reference percentiles */}
+        {[50, 95].map((pct) => (
+          <g key={pct}>
+            <line x1={padL} y1={y(pct)} x2={width - padR} y2={y(pct)}
+              stroke={pct === 95 ? "rgba(245,158,11,0.35)" : "rgba(255,255,255,0.08)"}
+              strokeDasharray="4 5" />
+            <text x={padL - 6} y={y(pct) + 4} fontSize={11} textAnchor="end"
+              fill={pct === 95 ? "var(--amber)" : "var(--text-faint)"}>
+              p{pct}
+            </text>
+          </g>
+        ))}
+        {[0, 100].map((pct) => (
+          <text key={pct} x={padL - 6} y={y(pct) + 4} fontSize={11} textAnchor="end" fill="var(--text-faint)">
+            {pct === 0 ? "min" : "max"}
+          </text>
+        ))}
+        {xTicks.map((v) => (
+          <g key={v}>
+            <line x1={x(v)} y1={padT} x2={x(v)} y2={height - padB} stroke="rgba(255,255,255,0.04)" />
+            <text x={x(v)} y={height - 8} fontSize={11} textAnchor="middle" fill="var(--text-faint)">
+              {fmtMs(v)}
+            </text>
+          </g>
+        ))}
+        {series.map((s) => {
+          const sorted = [...s.samples].sort((a, b) => a - b);
+          const dim = dimmed.has(s.provider ?? s.name);
+          const d = sorted
+            .map((v, i) => {
+              const pct = (i / (sorted.length - 1)) * 100;
+              return `${i === 0 ? "M" : "L"}${x(v).toFixed(1)},${y(pct).toFixed(1)}`;
+            })
+            .join(" ");
+          const p95 = sorted[Math.min(sorted.length - 1, Math.ceil(0.95 * sorted.length) - 1)];
+          const p50 = sorted[Math.floor(sorted.length / 2)];
+          return (
+            <g key={s.name} opacity={dim ? 0.12 : 1} style={{ transition: "opacity 0.25s" }}>
+              <path
+                d={d} fill="none" stroke={s.color} strokeWidth={2.2}
+                strokeDasharray={s.dash} strokeLinejoin="round"
+                onMouseMove={(e) =>
+                  !dim &&
+                  tooltip.show(e, [s.name, `p50 ${fmtMs(p50)}`, `p95 ${fmtMs(p95)}`, `worst ${fmtMs(sorted[sorted.length - 1])}`])
+                }
+                onMouseLeave={tooltip.hide}
+                style={{ cursor: "default" }}
+              />
+              <circle cx={x(p95)} cy={y(95)} r={3.5} fill={s.color} />
+            </g>
+          );
+        })}
+      </svg>
+    </ChartShell>
+  );
+}

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { embeddedResults, loadResults, samplePoints, fmtMs } from "./data.js";
-import { BarChart, StripPlot, HistoryChart, Legend } from "./charts.jsx";
+import { BarChart, StripPlot, HistoryChart, CdfChart, Legend } from "./charts.jsx";
 
 const COLORS = { neon: "var(--neon)", supabase: "var(--supabase)" };
 const NEON_HEX = "#34d399";
@@ -147,6 +147,29 @@ export default function App() {
             { color: NEON_HEX, label: "Neon" },
             { color: SUPA_HEX, label: "Supabase" },
             { color: "#f59e0b", label: "p95", toggle: false },
+          ]}
+        />
+      </Card>
+
+      <Card
+        tag="every sample, ranked"
+        runs={`${nq.runs} runs per path`}
+        title="Latency percentiles"
+        sub="The same raw samples as cumulative percentile curves: read p50 and p95 straight off the dashed lines, and how heavy each path's tail is. Hover a curve for its summary."
+      >
+        <CdfChart series={[
+          { name: "Neon · pooler", provider: "Neon", color: NEON_HEX, samples: samplePoints(get("neon", "pooled-query-latency")).map((p) => p.v) },
+          { name: "Neon · direct", provider: "Neon", color: NEON_HEX, dash: "6 5", samples: samplePoints(nq).map((p) => p.v) },
+          { name: "Supabase · direct (IPv6)", provider: "Supabase", color: SUPA_HEX, samples: samplePoints(get("supabase", "direct-query-latency")).map((p) => p.v) },
+          { name: "Supabase · session pooler", provider: "Supabase", color: SUPA_HEX, dash: "6 5", samples: samplePoints(sq).map((p) => p.v) },
+          { name: "Supabase · transaction pooler", provider: "Supabase", color: SUPA_HEX, dash: "2 4", samples: samplePoints(get("supabase", "pooled-query-latency")).map((p) => p.v) },
+        ]} dimmed={dimmed} />
+        <Legend
+          onToggle={toggleSeries}
+          dimmed={dimmed}
+          items={[
+            { color: NEON_HEX, label: "Neon" },
+            { color: SUPA_HEX, label: "Supabase" },
           ]}
         />
       </Card>
