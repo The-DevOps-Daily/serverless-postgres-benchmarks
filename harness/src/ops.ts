@@ -153,7 +153,8 @@ export async function resizeOp(provider: Provider, runs: number): Promise<OpResu
   }
   const project = await provider.createProject(uniqueName("rsz", 0));
   try {
-    return await timeOp({ op: "resize", provider: provider.name, runs, pauseMs: 8000 }, async (run) => {
+    // Long pause: Supabase's addon pipeline needs minutes between changes
+    return await timeOp({ op: "resize", provider: provider.name, runs, pauseMs: 180_000 }, async (run) => {
       const direction = run % 2 === 0 ? "up" : "down";
       // probe in the background to measure the downtime window
       let firstFailure = 0;

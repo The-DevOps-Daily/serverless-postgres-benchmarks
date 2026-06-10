@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { BENCH_PREFIX, assertBenchName, config } from "../config.js";
-import { pollUntil } from "../timing.js";
+import { pollUntil, sleep } from "../timing.js";
 import type { BenchProject, Provider } from "../types.js";
 import { firstSuccessfulQuery } from "./sql.js";
 
@@ -15,13 +15,29 @@ async function api<T>(path: string, init?: RequestInit): Promise<T> {
   });
   if (!res.ok) {
     const body = await res.text();
-    throw new Error(
+    const error = new Error(
       `Supabase API ${init?.method ?? "GET"} ${path} -> ${res.status}: ${body.slice(0, 300)}`,
-    );
+    ) as Error & { status?: number };
+    error.status = res.status;
+    throw error;
   }
-  // DELETE returns 200 with body; some endpoints return 204
-  if (res.status === 204) return undefined as T;
-  return (await res.json()) as T;
+  // several mutation endpoints return 200/204 with an empty body
+  const text = await res.text();
+  if (!text) return undefined as T;
+  return JSON.parse(text) as T;
+}
+
+/** Retry mutations the platform throttles (429 "still processing addon changes"). */
+async function apiWithRetry<T>(path: string, init: RequestInit, attempts = 6): Promise<T> {
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await api<T>(path, init);
+    } catch (error) {
+      const status = (error as { status?: number }).status;
+      if (attempt >= attempts || (status !== 429 && status !== 400)) throw error;
+      await sleep(60_000);
+    }
+  }
 }
 
 export const supabase: Provider = {
@@ -149,13 +165,15 @@ export const supabase: Provider = {
   },
 
   async resizeCompute(project: BenchProject, direction: "up" | "down"): Promise<void> {
+    // Supabase throttles consecutive addon changes for minutes; the backoff
+    // wait is part of the real operator experience and counts as apply time.
     if (direction === "up") {
-      await api(`/projects/${project.id}/billing/addons`, {
+      await apiWithRetry(`/projects/${project.id}/billing/addons`, {
         method: "PATCH",
         body: JSON.stringify({ addon_type: "compute_instance", addon_variant: "ci_small" }),
       });
     } else {
-      await api(`/projects/${project.id}/billing/addons/ci_small`, { method: "DELETE" });
+      await apiWithRetry(`/projects/${project.id}/billing/addons/ci_small`, { method: "DELETE" });
     }
     await pollUntil(
       async () => {

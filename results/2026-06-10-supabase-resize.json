@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-10T21:37:27.702Z",
+  "environment": {
+    "provider": "supabase",
+    "region": "eu-central-1",
+    "plan": "pro",
+    "clientLocation": "do-fra1-2vcpu",
+    "nodeVersion": "v22.22.3",
+    "harnessVersion": "0.1.0"
+  },
+  "results": [
+    {
+      "op": "resize",
+      "provider": "supabase",
+      "runs": 10,
+      "failures": 10,
+      "samples": [
+        {
+          "durationMs": 3854.1,
+          "startedAt": "2026-06-10T21:35:57.063Z",
+          "error": "Unexpected end of JSON input"
+        },
+        {
+          "durationMs": 1202.8,
+          "startedAt": "2026-06-10T21:36:08.920Z",
+          "error": "Supabase API DELETE /projects/fcoccbobgkispvregnjo/billing/addons/ci_small -> 400: {\"message\":\"Project is not in a healthy state. Try again in a few minutes or contact support if it persists.\"}"
+        },
+        {
+          "durationMs": 1328.9,
+          "startedAt": "2026-06-10T21:36:18.123Z",
+          "error": "Supabase API PATCH /projects/fcoccbobgkispvregnjo/billing/addons -> 400: {\"message\":\"Project is not in a healthy state. Try again in a few minutes or contact support if it persists.\"}"
+        },
+        {
+          "durationMs": 1267.5,
+          "startedAt": "2026-06-10T21:36:27.456Z",
+          "error": "Supabase API DELETE /projects/fcoccbobgkispvregnjo/billing/addons/ci_small -> 400: {\"message\":\"Project is not in a healthy state. Try again in a few minutes or contact support if it persists.\"}"
+        },
+        {
+          "durationMs": 2459.6,
+          "startedAt": "2026-06-10T21:36:36.724Z",
+          "error": "Supabase API PATCH /projects/fcoccbobgkispvregnjo/billing/addons -> 429: {\"message\":\"We are still processing addon changes, please try again in 3 minute(s).\"}"
+        },
+        {
+          "durationMs": 1417.3,
+          "startedAt": "2026-06-10T21:36:47.184Z",
+          "error": "Supabase API DELETE /projects/fcoccbobgkispvregnjo/billing/addons/ci_small -> 429: {\"message\":\"We are still processing addon changes, please try again in 3 minute(s).\"}"
+        },
+        {
+          "durationMs": 1307,
+          "startedAt": "2026-06-10T21:36:56.602Z",
+          "error": "Supabase API PATCH /projects/fcoccbobgkispvregnjo/billing/addons -> 429: {\"message\":\"We are still processing addon changes, please try again in 3 minute(s).\"}"
+        },
+        {
+          "durationMs": 1261.1,
+          "startedAt": "2026-06-10T21:37:05.911Z",
+          "error": "Supabase API DELETE /projects/fcoccbobgkispvregnjo/billing/addons/ci_small -> 429: {\"message\":\"We are still processing addon changes, please try again in 2 minute(s).\"}"
+        },
+        {
+          "durationMs": 1388.2,
+          "startedAt": "2026-06-10T21:37:15.172Z",
+          "error": "Supabase API PATCH /projects/fcoccbobgkispvregnjo/billing/addons -> 429: {\"message\":\"We are still processing addon changes, please try again in 2 minute(s).\"}"
+        },
+        {
+          "durationMs": 1263.2,
+          "startedAt": "2026-06-10T21:37:24.560Z",
+          "error": "Supabase API DELETE /projects/fcoccbobgkispvregnjo/billing/addons/ci_small -> 429: {\"message\":\"We are still processing addon changes, please try again in 2 minute(s).\"}"
+        }
+      ],
+      "stats": {
+        "medianMs": null,
+        "p95Ms": null,
+        "minMs": null,
+        "maxMs": null
+      }
+    }
+  ]
+}
