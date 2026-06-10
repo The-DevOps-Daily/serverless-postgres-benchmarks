@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-10T21:30:45.223Z",
+  "environment": {
+    "provider": "neon",
+    "region": "aws-eu-central-1",
+    "plan": "scale",
+    "clientLocation": "do-fra1-2vcpu",
+    "nodeVersion": "v22.22.3",
+    "harnessVersion": "0.1.0"
+  },
+  "results": [
+    {
+      "op": "concurrency",
+      "provider": "neon",
+      "runs": 5,
+      "failures": 0,
+      "samples": [
+        {
+          "durationMs": 1399.8,
+          "startedAt": "2026-06-10T21:30:06.608Z",
+          "phases": {
+            "clients": 200,
+            "refused": 0,
+            "connMedianMs": 1305.2,
+            "connP95Ms": 1338.9,
+            "connMaxMs": 1342.8
+          }
+        },
+        {
+          "durationMs": 1058.2,
+          "startedAt": "2026-06-10T21:30:16.015Z",
+          "phases": {
+            "clients": 200,
+            "refused": 0,
+            "connMedianMs": 982.6,
+            "connP95Ms": 1021,
+            "connMaxMs": 1025.1
+          }
+        },
+        {
+          "durationMs": 1103.7,
+          "startedAt": "2026-06-10T21:30:25.081Z",
+          "phases": {
+            "clients": 200,
+            "refused": 0,
+            "connMedianMs": 1023.7,
+            "connP95Ms": 1052.9,
+            "connMaxMs": 1061.6
+          }
+        },
+        {
+          "durationMs": 1106.7,
+          "startedAt": "2026-06-10T21:30:34.185Z",
+          "phases": {
+            "clients": 200,
+            "refused": 0,
+            "connMedianMs": 1045.8,
+            "connP95Ms": 1060.7,
+            "connMaxMs": 1071.4
+          }
+        },
+        {
+          "durationMs": 1093.1,
+          "startedAt": "2026-06-10T21:30:43.294Z",
+          "phases": {
+            "clients": 200,
+            "refused": 0,
+            "connMedianMs": 1027.7,
+            "connP95Ms": 1045.5,
+            "connMaxMs": 1055.9
+          }
+        }
+      ],
+      "stats": {
+        "medianMs": 1103.7,
+        "p95Ms": 1399.8,
+        "minMs": 1058.2,
+        "maxMs": 1399.8,
+        "phases": {
+          "clients": {
+            "medianMs": 200,
+            "p95Ms": 200,
+            "minMs": 200,
+            "maxMs": 200
+          },
+          "refused": {
+            "medianMs": 0,
+            "p95Ms": 0,
+            "minMs": 0,
+            "maxMs": 0
+          },
+          "connMedianMs": {
+            "medianMs": 1027.7,
+            "p95Ms": 1305.2,
+            "minMs": 982.6,
+            "maxMs": 1305.2
+          },
+          "connP95Ms": {
+            "medianMs": 1052.9,
+            "p95Ms": 1338.9,
+            "minMs": 1021,
+            "maxMs": 1338.9
+          },
+          "connMaxMs": {
+            "medianMs": 1061.6,
+            "p95Ms": 1342.8,
+            "minMs": 1025.1,
+            "maxMs": 1342.8
+          }
+        }
+      }
+    }
+  ]
+}
