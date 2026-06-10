@@ -135,8 +135,10 @@ async function main() {
   };
 
   const stamp = file.generatedAt.slice(0, 10);
+  // concurrency runs at several client levels per day; keep them apart
+  const opSlug = args.op === "concurrency" ? `concurrency-c${args.clients}` : args.op;
   const outPath =
-    args.out ?? join("..", "results", `${stamp}-${args.provider}-${args.op}.json`);
+    args.out ?? join("..", "results", `${stamp}-${args.provider}-${opSlug}.json`);
   mkdirSync(join("..", "results"), { recursive: true });
   writeFileSync(outPath, JSON.stringify(file, null, 2));
 
