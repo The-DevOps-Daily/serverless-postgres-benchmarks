@@ -210,6 +210,129 @@ export default function App() {
         ]} />
       </Card>
 
+      {(() => {
+        /* ---- paid-tier sections, rendered as their data lands ---- */
+        const concLevels = [50, 100, 200]
+          .map((level) => ({
+            level,
+            neon: get("neon", `concurrency-c${level}`),
+            supabase: get("supabase", `concurrency-c${level}`),
+          }))
+          .filter((x) => x.neon || x.supabase);
+        const nb = get("neon", "branch");
+        const sb = get("supabase", "branch");
+        const nrs = get("neon", "resize");
+        const srs = get("supabase", "resize");
+        const nrep = get("neon", "replica");
+        const srep = get("supabase", "replica");
+        const nrest = get("neon", "restore");
+        const phaseMedian = (r, phase) => {
+          const vals = samplePoints(r, phase).map((p) => p.v).sort((a, b) => a - b);
+          return vals[Math.floor(vals.length / 2)] ?? 0;
+        };
+        const okOnly = (r) => r && r.runs - r.failures > 0;
+
+        return (
+          <>
+            {(okOnly(nb) || okOnly(sb) || concLevels.length > 0) && (
+              <header className="hero" style={{ marginTop: 56 }}>
+                <p className="eyebrow">Launch / Pro tier &middot; paid plans</p>
+                <h1 className="title" style={{ fontSize: "clamp(26px, 4vw, 38px)" }}>
+                  The operational benchmarks<span className="accent">.</span>
+                </h1>
+                <p className="lede" style={{ fontSize: 15 }}>
+                  Neon (Scale account, Launch-tier operations) vs Supabase Pro: the operations
+                  that unlock when you pay. Same region, same client, same rules.
+                </p>
+              </header>
+            )}
+
+            {concLevels.length > 0 && (
+              <Card
+                tag="simultaneous cold connections · transaction pooler"
+                runs={`${concLevels[0].neon?.runs ?? concLevels[0].supabase?.runs ?? 5} waves per level`}
+                title="Connection stampede"
+                sub="N clients connect at once, each running one query. Bar is the median wave wall-time; tick is the worst wave. Refusals would appear here; there were none."
+              >
+                <BarChart
+                  rows={concLevels.flatMap(({ level, neon, supabase }) =>
+                    [
+                      neon && { label: `Neon · ${level} clients`, series: "Neon", color: COLORS.neon, median: neon.stats.medianMs, p95: neon.stats.maxMs, min: neon.stats.minMs, max: neon.stats.maxMs, runs: neon.runs },
+                      supabase && { label: `Supabase · ${level} clients`, series: "Supabase", color: COLORS.supabase, median: supabase.stats.medianMs, p95: supabase.stats.maxMs, min: supabase.stats.minMs, max: supabase.stats.maxMs, runs: supabase.runs },
+                    ].filter(Boolean),
+                  )}
+                  dimmed={dimmed}
+                />
+                <Legend onToggle={toggleSeries} dimmed={dimmed} items={[
+                  { color: NEON_HEX, label: "Neon" },
+                  { color: SUPA_HEX, label: "Supabase" },
+                  { color: "#f59e0b", label: "worst wave", toggle: false },
+                ]} />
+              </Card>
+            )}
+
+            {okOnly(nb) && okOnly(sb) && (
+              <Card
+                tag="paid-tier branching"
+                runs={`${nb.runs} + ${sb.runs} runs`}
+                title="Branch, to queryable"
+                sub="Neon branches arrive carrying the parent's 100k rows; Supabase branches copy schema and config only (their with-data API path requires pre-existing physical backups and refused every attempt on a fresh project). Every dot is one branch."
+              >
+                <StripPlot series={[
+                  { label: "Neon (with data)", samples: samplePoints(nb), median: nb.stats.medianMs, color: COLORS.neon },
+                  { label: "Supabase (schema only)", samples: samplePoints(sb), median: sb.stats.medianMs, color: COLORS.supabase },
+                ]} />
+              </Card>
+            )}
+
+            <div className="grid-2">
+              {(okOnly(nrs) || okOnly(srs)) && (
+                <Card
+                  tag="compute resize"
+                  runs={`${(nrs?.runs ?? 0) + (srs?.runs ?? 0)} runs`}
+                  title="Resize: apply time vs outage"
+                  sub="Changing compute size, alternating up and down. Apply is when the API says done; outage is how long SQL actually failed (probed every 250ms)."
+                >
+                  <BarChart width={620} rows={[
+                    okOnly(nrs) && { label: "Neon · apply", series: "Neon", color: COLORS.neon, median: phaseMedian(nrs, "apiMs"), p95: nrs.stats.p95Ms, runs: nrs.runs },
+                    okOnly(nrs) && { label: "Neon · SQL outage", series: "Neon", color: COLORS.neon, median: phaseMedian(nrs, "downtimeMs"), p95: phaseMedian(nrs, "downtimeMs"), runs: nrs.runs },
+                    okOnly(srs) && { label: "Supabase · apply", series: "Supabase", color: COLORS.supabase, median: phaseMedian(srs, "apiMs"), p95: srs.stats.p95Ms, runs: srs.runs },
+                    okOnly(srs) && { label: "Supabase · SQL outage", series: "Supabase", color: COLORS.supabase, median: phaseMedian(srs, "downtimeMs"), p95: phaseMedian(srs, "downtimeMs"), runs: srs.runs },
+                  ].filter(Boolean)} dimmed={dimmed} />
+                </Card>
+              )}
+
+              {(okOnly(nrep) || okOnly(srep)) && (
+                <Card
+                  tag="read replicas"
+                  runs={`${(nrep?.runs ?? 0) + (srep?.runs ?? 0)} runs`}
+                  title="Replica, to first query"
+                  sub="Neon replicas share storage with the primary (compute-only); Supabase replicas clone the database (Small compute minimum). Every dot is one replica."
+                >
+                  <StripPlot width={620} series={[
+                    okOnly(nrep) && { label: "Neon", samples: samplePoints(nrep), median: nrep.stats.medianMs, color: COLORS.neon },
+                    okOnly(srep) && { label: "Supabase", samples: samplePoints(srep), median: srep.stats.medianMs, color: COLORS.supabase },
+                  ].filter(Boolean)} />
+                </Card>
+              )}
+            </div>
+
+            {okOnly(nrest) && (
+              <Card
+                tag="point-in-time restore · 100k rows"
+                runs={`${nrest.runs} runs`}
+                title="Neon restore to 60 seconds ago"
+                sub="Branch restore to a timestamp, timed until SQL answers on the restored state. Supabase PITR is a $100/month add-on with a 7-day minimum window; we document it rather than benchmark it."
+              >
+                <StripPlot series={[
+                  { label: "", name: "restore", samples: samplePoints(nrest), median: nrest.stats.medianMs, color: COLORS.neon },
+                ]} />
+              </Card>
+            )}
+          </>
+        );
+      })()}
+
       <Card
         tag="median over time"
         runs={`${runDates.length} session${runDates.length === 1 ? "" : "s"}`}

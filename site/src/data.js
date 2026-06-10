@@ -4,7 +4,9 @@ function build(files) {
   for (const { data } of files.sort((a, b) => a.file.localeCompare(b.file))) {
     const date = data.generatedAt.slice(0, 10);
     for (const r of data.results) {
-      const key = `${r.provider}/${r.op}`;
+      // concurrency runs at several client levels; keep them distinct
+      const level = r.op === "concurrency" ? r.samples.find((s) => s.phases?.clients)?.phases.clients : null;
+      const key = `${r.provider}/${r.op}${level ? `-c${level}` : ""}`;
       latest.set(key, { ...r, env: data.environment, generatedAt: data.generatedAt });
       if (!history.has(key)) history.set(key, []);
       const entries = history.get(key);
