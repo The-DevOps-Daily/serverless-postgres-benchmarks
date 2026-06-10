@@ -42,15 +42,21 @@ export async function firstSuccessfulQuery(
   connectionString: string,
   { timeoutMs = 120_000 }: { timeoutMs?: number } = {},
 ): Promise<number> {
-  return pollUntil(
-    async () => {
-      try {
-        await queryOnce(connectionString);
-        return true;
-      } catch {
-        return false;
-      }
-    },
-    { timeoutMs, intervalMs: 1500 },
-  );
+  let lastError = "no attempt made";
+  try {
+    return await pollUntil(
+      async () => {
+        try {
+          await queryOnce(connectionString);
+          return true;
+        } catch (error) {
+          lastError = error instanceof Error ? error.message : String(error);
+          return false;
+        }
+      },
+      { timeoutMs, intervalMs: 1500 },
+    );
+  } catch {
+    throw new Error(`No successful query within ${timeoutMs}ms; last error: ${lastError}`);
+  }
 }

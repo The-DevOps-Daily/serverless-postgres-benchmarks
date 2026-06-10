@@ -52,15 +52,21 @@ export const supabase: Provider = {
     // Free-plan direct connections (db.<ref>.supabase.co) resolve to IPv6
     // only; IPv4 clients reach Postgres through Supavisor. Session mode
     // (port 5432) stands in for a direct connection, transaction mode
-    // (port 6543) is the serverless path. Both carry publicly reachable
-    // IPv4, so the harness uses session mode as its primary connection.
+    // (port 6543) is the serverless path. The pooler cluster (aws-0, aws-1,
+    // ...) varies per project, so read it from the API instead of guessing.
+    const pooler = await api<
+      Array<{ db_user: string; db_host: string; db_port: number; db_name: string }>
+    >(`/projects/${ref}/config/database/pooler`);
+    const primary = pooler.find((p) => p.db_port === 6543) ?? pooler[0];
+    if (!primary) throw new Error(`Supabase ${ref}: no pooler config returned`);
+
     const pass = encodeURIComponent(dbPass);
-    const poolerHost = `aws-0-${config.supabase.region}.pooler.supabase.com`;
+    const base = `${encodeURIComponent(primary.db_user)}:${pass}@${primary.db_host}`;
     const project: BenchProject = {
       id: ref,
       name,
-      connectionString: `postgresql://postgres.${ref}:${pass}@${poolerHost}:5432/postgres?sslmode=require`,
-      pooledConnectionString: `postgresql://postgres.${ref}:${pass}@${poolerHost}:6543/postgres?sslmode=require`,
+      connectionString: `postgresql://${base}:5432/${primary.db_name}?sslmode=require`,
+      pooledConnectionString: `postgresql://${base}:6543/${primary.db_name}?sslmode=require`,
     };
     await firstSuccessfulQuery(project.connectionString, { timeoutMs: 240_000 });
     return project;
