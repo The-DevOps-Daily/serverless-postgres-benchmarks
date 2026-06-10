@@ -49,11 +49,18 @@ export const supabase: Provider = {
       { timeoutMs: 600_000, intervalMs: 2000 },
     );
 
+    // Free-plan direct connections (db.<ref>.supabase.co) resolve to IPv6
+    // only; IPv4 clients reach Postgres through Supavisor. Session mode
+    // (port 5432) stands in for a direct connection, transaction mode
+    // (port 6543) is the serverless path. Both carry publicly reachable
+    // IPv4, so the harness uses session mode as its primary connection.
+    const pass = encodeURIComponent(dbPass);
+    const poolerHost = `aws-0-${config.supabase.region}.pooler.supabase.com`;
     const project: BenchProject = {
       id: ref,
       name,
-      connectionString: `postgresql://postgres:${encodeURIComponent(dbPass)}@db.${ref}.supabase.co:5432/postgres?sslmode=require`,
-      pooledConnectionString: `postgresql://postgres.${ref}:${encodeURIComponent(dbPass)}@aws-0-${config.supabase.region}.pooler.supabase.com:6543/postgres?sslmode=require`,
+      connectionString: `postgresql://postgres.${ref}:${pass}@${poolerHost}:5432/postgres?sslmode=require`,
+      pooledConnectionString: `postgresql://postgres.${ref}:${pass}@${poolerHost}:6543/postgres?sslmode=require`,
     };
     await firstSuccessfulQuery(project.connectionString, { timeoutMs: 240_000 });
     return project;
