@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-10T21:09:14.471Z",
+  "environment": {
+    "provider": "supabase",
+    "region": "eu-central-1",
+    "plan": "pro",
+    "clientLocation": "do-fra1-2vcpu",
+    "nodeVersion": "v22.22.3",
+    "harnessVersion": "0.1.0"
+  },
+  "results": [
+    {
+      "op": "branch-with-data",
+      "provider": "supabase",
+      "runs": 10,
+      "failures": 10,
+      "samples": [
+        {
+          "durationMs": 2183.6,
+          "startedAt": "2026-06-10T20:52:31.024Z",
+          "error": "Supabase API POST /projects/ayeqaixckzcxddarddsi/branches -> 406: {\"message\":\"Failed to fetch latest physical backup\",\"errorEventId\":\"bb8fef37a1a5453ab9e1eeb910aa4d36\"}"
+        },
+        {
+          "durationMs": 105081.1,
+          "startedAt": "2026-06-10T20:52:36.210Z",
+          "error": "Supabase branch: missing pooler config or db_pass"
+        },
+        {
+          "durationMs": 107320.5,
+          "startedAt": "2026-06-10T20:54:24.294Z",
+          "error": "Supabase branch: missing pooler config or db_pass"
+        },
+        {
+          "durationMs": 105480.8,
+          "startedAt": "2026-06-10T20:56:14.617Z",
+          "error": "Supabase branch: missing pooler config or db_pass"
+        },
+        {
+          "durationMs": 107677.3,
+          "startedAt": "2026-06-10T20:58:03.099Z",
+          "error": "Supabase branch: missing pooler config or db_pass"
+        },
+        {
+          "durationMs": 105881.9,
+          "startedAt": "2026-06-10T20:59:53.779Z",
+          "error": "Supabase branch: missing pooler config or db_pass"
+        },
+        {
+          "durationMs": 105856.4,
+          "startedAt": "2026-06-10T21:01:42.662Z",
+          "error": "Supabase branch: missing pooler config or db_pass"
+        },
+        {
+          "durationMs": 120717.3,
+          "startedAt": "2026-06-10T21:03:31.522Z",
+          "error": "Supabase branch: missing pooler config or db_pass"
+        },
+        {
+          "durationMs": 106541.1,
+          "startedAt": "2026-06-10T21:05:35.241Z",
+          "error": "Supabase branch: missing pooler config or db_pass"
+        },
+        {
+          "durationMs": 105951,
+          "startedAt": "2026-06-10T21:07:24.784Z",
+          "error": "Supabase branch: missing pooler config or db_pass"
+        }
+      ],
+      "stats": {
+        "medianMs": null,
+        "p95Ms": null,
+        "minMs": null,
+        "maxMs": null
+      }
+    }
+  ]
+}

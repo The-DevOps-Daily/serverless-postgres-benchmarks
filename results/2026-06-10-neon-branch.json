@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-06-10T16:54:41.538Z",
+  "generatedAt": "2026-06-10T20:44:56.978Z",
   "environment": {
     "provider": "neon",
     "region": "aws-eu-central-1",
-    "plan": "free",
+    "plan": "scale",
     "clientLocation": "do-fra1-2vcpu",
     "nodeVersion": "v22.22.3",
     "harnessVersion": "0.1.0"
@@ -17,87 +17,87 @@
       "failures": 0,
       "samples": [
         {
-          "durationMs": 3185.6,
-          "startedAt": "2026-06-10T16:53:51.072Z",
+          "durationMs": 1870.5,
+          "startedAt": "2026-06-10T20:44:12.472Z",
           "phases": {
-            "branchQueryableMs": 2920.002635
+            "branchQueryableMs": 1599.798917
           }
         },
         {
-          "durationMs": 2165.3,
-          "startedAt": "2026-06-10T16:53:57.260Z",
+          "durationMs": 1700.2,
+          "startedAt": "2026-06-10T20:44:17.343Z",
           "phases": {
-            "branchQueryableMs": 1898.9050179999995
+            "branchQueryableMs": 1417.5897569999997
           }
         },
         {
-          "durationMs": 2184.7,
-          "startedAt": "2026-06-10T16:54:02.426Z",
+          "durationMs": 1741.7,
+          "startedAt": "2026-06-10T20:44:22.043Z",
           "phases": {
-            "branchQueryableMs": 1911.1202680000024
+            "branchQueryableMs": 1449.6212729999988
           }
         },
         {
-          "durationMs": 2207.5,
-          "startedAt": "2026-06-10T16:54:07.612Z",
+          "durationMs": 1668.8,
+          "startedAt": "2026-06-10T20:44:26.785Z",
           "phases": {
-            "branchQueryableMs": 1906.3399539999991
+            "branchQueryableMs": 1384.4731329999995
           }
         },
         {
-          "durationMs": 2176.6,
-          "startedAt": "2026-06-10T16:54:12.820Z",
+          "durationMs": 1686.2,
+          "startedAt": "2026-06-10T20:44:31.455Z",
           "phases": {
-            "branchQueryableMs": 1910.3152039999986
+            "branchQueryableMs": 1389.8837289999974
           }
         },
         {
-          "durationMs": 2235.5,
-          "startedAt": "2026-06-10T16:54:17.997Z",
+          "durationMs": 1681,
+          "startedAt": "2026-06-10T20:44:36.141Z",
           "phases": {
-            "branchQueryableMs": 1952.674282
+            "branchQueryableMs": 1416.3626699999986
           }
         },
         {
-          "durationMs": 2145.4,
-          "startedAt": "2026-06-10T16:54:23.233Z",
+          "durationMs": 1635.1,
+          "startedAt": "2026-06-10T20:44:40.823Z",
           "phases": {
-            "branchQueryableMs": 1885.0366100000028
+            "branchQueryableMs": 1381.996116000002
           }
         },
         {
-          "durationMs": 2174.5,
-          "startedAt": "2026-06-10T16:54:28.378Z",
+          "durationMs": 1648.9,
+          "startedAt": "2026-06-10T20:44:45.458Z",
           "phases": {
-            "branchQueryableMs": 1894.145924999997
+            "branchQueryableMs": 1379.122583999997
           }
         },
         {
-          "durationMs": 2216.5,
-          "startedAt": "2026-06-10T16:54:33.553Z",
+          "durationMs": 1664.6,
+          "startedAt": "2026-06-10T20:44:50.107Z",
           "phases": {
-            "branchQueryableMs": 1920.6130219999977
+            "branchQueryableMs": 1385.7917519999974
           }
         },
         {
-          "durationMs": 2171.9,
-          "startedAt": "2026-06-10T16:54:38.770Z",
+          "durationMs": 1647.3,
+          "startedAt": "2026-06-10T20:44:54.771Z",
           "phases": {
-            "branchQueryableMs": 1905.3597569999984
+            "branchQueryableMs": 1382.478498999997
           }
         }
       ],
       "stats": {
-        "medianMs": 2176.6,
-        "p95Ms": 3185.6,
-        "minMs": 2145.4,
-        "maxMs": 3185.6,
+        "medianMs": 1668.8,
+        "p95Ms": 1870.5,
+        "minMs": 1635.1,
+        "maxMs": 1870.5,
         "phases": {
           "branchQueryableMs": {
-            "medianMs": 1906.3,
-            "p95Ms": 2920,
-            "minMs": 1885,
-            "maxMs": 2920
+            "medianMs": 1385.8,
+            "p95Ms": 1599.8,
+            "minMs": 1379.1,
+            "maxMs": 1599.8
           }
         }
       }
