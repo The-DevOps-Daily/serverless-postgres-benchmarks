@@ -60,14 +60,17 @@ export const supabase: Provider = {
     const primary = pooler.find((p) => p.db_port === 6543) ?? pooler[0];
     if (!primary) throw new Error(`Supabase ${ref}: no pooler config returned`);
 
+    // No sslmode in the URL: node-postgres lets URL sslmode override the
+    // explicit ssl option, which would bypass our CA bundle. queryOnce
+    // always dials TLS with verification via tlsFor().
     const pass = encodeURIComponent(dbPass);
     const base = `${encodeURIComponent(primary.db_user)}:${pass}@${primary.db_host}`;
     const project: BenchProject = {
       id: ref,
       name,
-      connectionString: `postgresql://${base}:5432/${primary.db_name}?sslmode=require`,
-      pooledConnectionString: `postgresql://${base}:6543/${primary.db_name}?sslmode=require`,
-      directConnectionString: `postgresql://postgres:${pass}@db.${ref}.supabase.co:5432/${primary.db_name}?sslmode=require`,
+      connectionString: `postgresql://${base}:5432/${primary.db_name}`,
+      pooledConnectionString: `postgresql://${base}:6543/${primary.db_name}`,
+      directConnectionString: `postgresql://postgres:${pass}@db.${ref}.supabase.co:5432/${primary.db_name}`,
     };
     await firstSuccessfulQuery(project.connectionString, { timeoutMs: 240_000 });
     return project;

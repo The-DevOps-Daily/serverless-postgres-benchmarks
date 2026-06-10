@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-06-10T16:36:54.197Z",
+  "generatedAt": "2026-06-10T16:42:20.836Z",
   "environment": {
     "provider": "supabase",
     "region": "eu-central-1",
@@ -17,8 +17,8 @@
       "failures": 1,
       "samples": [
         {
-          "durationMs": 246211.4,
-          "startedAt": "2026-06-10T16:32:47.981Z",
+          "durationMs": 245547.8,
+          "startedAt": "2026-06-10T16:38:15.283Z",
           "error": "No successful query within 240000ms; last error: self-signed certificate in certificate chain"
         }
       ],
