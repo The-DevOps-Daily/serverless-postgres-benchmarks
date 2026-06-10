@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-10T16:53:44.833Z",
+  "environment": {
+    "provider": "neon",
+    "region": "aws-eu-central-1",
+    "plan": "free",
+    "clientLocation": "do-fra1-2vcpu",
+    "nodeVersion": "v22.22.3",
+    "harnessVersion": "0.1.0"
+  },
+  "results": [
+    {
+      "op": "create-project",
+      "provider": "neon",
+      "runs": 20,
+      "failures": 0,
+      "samples": [
+        {
+          "durationMs": 6088.4,
+          "startedAt": "2026-06-10T16:50:04.953Z",
+          "phases": {
+            "readyAndQueryableMs": 5264.937607
+          }
+        },
+        {
+          "durationMs": 5801.6,
+          "startedAt": "2026-06-10T16:50:16.046Z",
+          "phases": {
+            "readyAndQueryableMs": 4964.776513000001
+          }
+        },
+        {
+          "durationMs": 5593.9,
+          "startedAt": "2026-06-10T16:50:26.849Z",
+          "phases": {
+            "readyAndQueryableMs": 4938.335444
+          }
+        },
+        {
+          "durationMs": 5573.1,
+          "startedAt": "2026-06-10T16:50:37.445Z",
+          "phases": {
+            "readyAndQueryableMs": 4944.496520000001
+          }
+        },
+        {
+          "durationMs": 13558,
+          "startedAt": "2026-06-10T16:50:48.019Z",
+          "phases": {
+            "readyAndQueryableMs": 12945.961194000003
+          }
+        },
+        {
+          "durationMs": 6011.9,
+          "startedAt": "2026-06-10T16:51:06.578Z",
+          "phases": {
+            "readyAndQueryableMs": 5138.549765999996
+          }
+        },
+        {
+          "durationMs": 5474.2,
+          "startedAt": "2026-06-10T16:51:17.591Z",
+          "phases": {
+            "readyAndQueryableMs": 4868.746622000006
+          }
+        },
+        {
+          "durationMs": 5775.9,
+          "startedAt": "2026-06-10T16:51:28.067Z",
+          "phases": {
+            "readyAndQueryableMs": 4970.724490000008
+          }
+        },
+        {
+          "durationMs": 5683.7,
+          "startedAt": "2026-06-10T16:51:38.843Z",
+          "phases": {
+            "readyAndQueryableMs": 5074.527992999996
+          }
+        },
+        {
+          "durationMs": 5528.4,
+          "startedAt": "2026-06-10T16:51:49.529Z",
+          "phases": {
+            "readyAndQueryableMs": 4893.937638000003
+          }
+        },
+        {
+          "durationMs": 5705.2,
+          "startedAt": "2026-06-10T16:52:00.059Z",
+          "phases": {
+            "readyAndQueryableMs": 4908.187812000004
+          }
+        },
+        {
+          "durationMs": 8568.3,
+          "startedAt": "2026-06-10T16:52:10.765Z",
+          "phases": {
+            "readyAndQueryableMs": 7930.965654
+          }
+        },
+        {
+          "durationMs": 3571.7,
+          "startedAt": "2026-06-10T16:52:24.334Z",
+          "phases": {
+            "readyAndQueryableMs": 2969.8863180000044
+          }
+        },
+        {
+          "durationMs": 5765,
+          "startedAt": "2026-06-10T16:52:32.907Z",
+          "phases": {
+            "readyAndQueryableMs": 4953.601126999973
+          }
+        },
+        {
+          "durationMs": 5718.4,
+          "startedAt": "2026-06-10T16:52:43.674Z",
+          "phases": {
+            "readyAndQueryableMs": 4918.381506000005
+          }
+        },
+        {
+          "durationMs": 3462,
+          "startedAt": "2026-06-10T16:52:54.394Z",
+          "phases": {
+            "readyAndQueryableMs": 2874.2853199999954
+          }
+        },
+        {
+          "durationMs": 5491.3,
+          "startedAt": "2026-06-10T16:53:02.857Z",
+          "phases": {
+            "readyAndQueryableMs": 4900.65529200001
+          }
+        },
+        {
+          "durationMs": 3927.3,
+          "startedAt": "2026-06-10T16:53:13.349Z",
+          "phases": {
+            "readyAndQueryableMs": 3095.9545100000105
+          }
+        },
+        {
+          "durationMs": 8751.6,
+          "startedAt": "2026-06-10T16:53:22.277Z",
+          "phases": {
+            "readyAndQueryableMs": 8149.566889000009
+          }
+        },
+        {
+          "durationMs": 8803.3,
+          "startedAt": "2026-06-10T16:53:36.029Z",
+          "phases": {
+            "readyAndQueryableMs": 7956.9618740000005
+          }
+        }
+      ],
+      "stats": {
+        "medianMs": 5705.2,
+        "p95Ms": 8803.3,
+        "minMs": 3462,
+        "maxMs": 13558,
+        "phases": {
+          "readyAndQueryableMs": {
+            "medianMs": 4944.5,
+            "p95Ms": 8149.6,
+            "minMs": 2874.3,
+            "maxMs": 12946
+          }
+        }
+      }
+    }
+  ]
+}

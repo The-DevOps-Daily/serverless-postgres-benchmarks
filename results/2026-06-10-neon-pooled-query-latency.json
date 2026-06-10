@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-10T16:46:01.655Z",
+  "environment": {
+    "provider": "neon",
+    "region": "aws-eu-central-1",
+    "plan": "free",
+    "clientLocation": "do-fra1-2vcpu",
+    "nodeVersion": "v22.22.3",
+    "harnessVersion": "0.1.0"
+  },
+  "results": [
+    {
+      "op": "pooled-query-latency",
+      "provider": "neon",
+      "runs": 50,
+      "failures": 0,
+      "samples": [
+        {
+          "durationMs": 40.5,
+          "startedAt": "2026-06-10T16:45:35.184Z"
+        },
+        {
+          "durationMs": 39,
+          "startedAt": "2026-06-10T16:45:35.725Z"
+        },
+        {
+          "durationMs": 34.1,
+          "startedAt": "2026-06-10T16:45:36.266Z"
+        },
+        {
+          "durationMs": 36,
+          "startedAt": "2026-06-10T16:45:36.800Z"
+        },
+        {
+          "durationMs": 31,
+          "startedAt": "2026-06-10T16:45:37.336Z"
+        },
+        {
+          "durationMs": 25,
+          "startedAt": "2026-06-10T16:45:37.866Z"
+        },
+        {
+          "durationMs": 21.5,
+          "startedAt": "2026-06-10T16:45:38.392Z"
+        },
+        {
+          "durationMs": 26.6,
+          "startedAt": "2026-06-10T16:45:38.914Z"
+        },
+        {
+          "durationMs": 31.9,
+          "startedAt": "2026-06-10T16:45:39.441Z"
+        },
+        {
+          "durationMs": 29.2,
+          "startedAt": "2026-06-10T16:45:39.973Z"
+        },
+        {
+          "durationMs": 27.5,
+          "startedAt": "2026-06-10T16:45:40.502Z"
+        },
+        {
+          "durationMs": 23.3,
+          "startedAt": "2026-06-10T16:45:41.029Z"
+        },
+        {
+          "durationMs": 31.4,
+          "startedAt": "2026-06-10T16:45:41.553Z"
+        },
+        {
+          "durationMs": 27.5,
+          "startedAt": "2026-06-10T16:45:42.085Z"
+        },
+        {
+          "durationMs": 23.1,
+          "startedAt": "2026-06-10T16:45:42.612Z"
+        },
+        {
+          "durationMs": 22,
+          "startedAt": "2026-06-10T16:45:43.136Z"
+        },
+        {
+          "durationMs": 20.8,
+          "startedAt": "2026-06-10T16:45:43.659Z"
+        },
+        {
+          "durationMs": 24.6,
+          "startedAt": "2026-06-10T16:45:44.180Z"
+        },
+        {
+          "durationMs": 29.1,
+          "startedAt": "2026-06-10T16:45:44.705Z"
+        },
+        {
+          "durationMs": 20.8,
+          "startedAt": "2026-06-10T16:45:45.234Z"
+        },
+        {
+          "durationMs": 24.1,
+          "startedAt": "2026-06-10T16:45:45.754Z"
+        },
+        {
+          "durationMs": 30.6,
+          "startedAt": "2026-06-10T16:45:46.278Z"
+        },
+        {
+          "durationMs": 28.9,
+          "startedAt": "2026-06-10T16:45:46.810Z"
+        },
+        {
+          "durationMs": 21.6,
+          "startedAt": "2026-06-10T16:45:47.340Z"
+        },
+        {
+          "durationMs": 25.1,
+          "startedAt": "2026-06-10T16:45:47.861Z"
+        },
+        {
+          "durationMs": 23,
+          "startedAt": "2026-06-10T16:45:48.386Z"
+        },
+        {
+          "durationMs": 31.8,
+          "startedAt": "2026-06-10T16:45:48.909Z"
+        },
+        {
+          "durationMs": 23.2,
+          "startedAt": "2026-06-10T16:45:49.440Z"
+        },
+        {
+          "durationMs": 21.3,
+          "startedAt": "2026-06-10T16:45:49.964Z"
+        },
+        {
+          "durationMs": 19.8,
+          "startedAt": "2026-06-10T16:45:50.485Z"
+        },
+        {
+          "durationMs": 26.5,
+          "startedAt": "2026-06-10T16:45:51.004Z"
+        },
+        {
+          "durationMs": 22.4,
+          "startedAt": "2026-06-10T16:45:51.531Z"
+        },
+        {
+          "durationMs": 22.3,
+          "startedAt": "2026-06-10T16:45:52.054Z"
+        },
+        {
+          "durationMs": 28.2,
+          "startedAt": "2026-06-10T16:45:52.577Z"
+        },
+        {
+          "durationMs": 29.1,
+          "startedAt": "2026-06-10T16:45:53.105Z"
+        },
+        {
+          "durationMs": 26.1,
+          "startedAt": "2026-06-10T16:45:53.634Z"
+        },
+        {
+          "durationMs": 24.5,
+          "startedAt": "2026-06-10T16:45:54.160Z"
+        },
+        {
+          "durationMs": 25.9,
+          "startedAt": "2026-06-10T16:45:54.685Z"
+        },
+        {
+          "durationMs": 24.5,
+          "startedAt": "2026-06-10T16:45:55.210Z"
+        },
+        {
+          "durationMs": 20.1,
+          "startedAt": "2026-06-10T16:45:55.735Z"
+        },
+        {
+          "durationMs": 33,
+          "startedAt": "2026-06-10T16:45:56.256Z"
+        },
+        {
+          "durationMs": 20.4,
+          "startedAt": "2026-06-10T16:45:56.788Z"
+        },
+        {
+          "durationMs": 23,
+          "startedAt": "2026-06-10T16:45:57.309Z"
+        },
+        {
+          "durationMs": 19.7,
+          "startedAt": "2026-06-10T16:45:57.832Z"
+        },
+        {
+          "durationMs": 22.5,
+          "startedAt": "2026-06-10T16:45:58.352Z"
+        },
+        {
+          "durationMs": 27.5,
+          "startedAt": "2026-06-10T16:45:58.875Z"
+        },
+        {
+          "durationMs": 23.8,
+          "startedAt": "2026-06-10T16:45:59.403Z"
+        },
+        {
+          "durationMs": 26.1,
+          "startedAt": "2026-06-10T16:45:59.927Z"
+        },
+        {
+          "durationMs": 28.8,
+          "startedAt": "2026-06-10T16:46:00.453Z"
+        },
+        {
+          "durationMs": 25.8,
+          "startedAt": "2026-06-10T16:46:00.981Z"
+        }
+      ],
+      "stats": {
+        "medianMs": 25.1,
+        "p95Ms": 36,
+        "minMs": 19.7,
+        "maxMs": 40.5
+      }
+    }
+  ]
+}

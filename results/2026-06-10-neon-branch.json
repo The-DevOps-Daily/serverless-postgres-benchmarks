@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-10T16:54:41.538Z",
+  "environment": {
+    "provider": "neon",
+    "region": "aws-eu-central-1",
+    "plan": "free",
+    "clientLocation": "do-fra1-2vcpu",
+    "nodeVersion": "v22.22.3",
+    "harnessVersion": "0.1.0"
+  },
+  "results": [
+    {
+      "op": "branch",
+      "provider": "neon",
+      "runs": 10,
+      "failures": 0,
+      "samples": [
+        {
+          "durationMs": 3185.6,
+          "startedAt": "2026-06-10T16:53:51.072Z",
+          "phases": {
+            "branchQueryableMs": 2920.002635
+          }
+        },
+        {
+          "durationMs": 2165.3,
+          "startedAt": "2026-06-10T16:53:57.260Z",
+          "phases": {
+            "branchQueryableMs": 1898.9050179999995
+          }
+        },
+        {
+          "durationMs": 2184.7,
+          "startedAt": "2026-06-10T16:54:02.426Z",
+          "phases": {
+            "branchQueryableMs": 1911.1202680000024
+          }
+        },
+        {
+          "durationMs": 2207.5,
+          "startedAt": "2026-06-10T16:54:07.612Z",
+          "phases": {
+            "branchQueryableMs": 1906.3399539999991
+          }
+        },
+        {
+          "durationMs": 2176.6,
+          "startedAt": "2026-06-10T16:54:12.820Z",
+          "phases": {
+            "branchQueryableMs": 1910.3152039999986
+          }
+        },
+        {
+          "durationMs": 2235.5,
+          "startedAt": "2026-06-10T16:54:17.997Z",
+          "phases": {
+            "branchQueryableMs": 1952.674282
+          }
+        },
+        {
+          "durationMs": 2145.4,
+          "startedAt": "2026-06-10T16:54:23.233Z",
+          "phases": {
+            "branchQueryableMs": 1885.0366100000028
+          }
+        },
+        {
+          "durationMs": 2174.5,
+          "startedAt": "2026-06-10T16:54:28.378Z",
+          "phases": {
+            "branchQueryableMs": 1894.145924999997
+          }
+        },
+        {
+          "durationMs": 2216.5,
+          "startedAt": "2026-06-10T16:54:33.553Z",
+          "phases": {
+            "branchQueryableMs": 1920.6130219999977
+          }
+        },
+        {
+          "durationMs": 2171.9,
+          "startedAt": "2026-06-10T16:54:38.770Z",
+          "phases": {
+            "branchQueryableMs": 1905.3597569999984
+          }
+        }
+      ],
+      "stats": {
+        "medianMs": 2176.6,
+        "p95Ms": 3185.6,
+        "minMs": 2145.4,
+        "maxMs": 3185.6,
+        "phases": {
+          "branchQueryableMs": {
+            "medianMs": 1906.3,
+            "p95Ms": 2920,
+            "minMs": 1885,
+            "maxMs": 2920
+          }
+        }
+      }
+    }
+  ]
+}

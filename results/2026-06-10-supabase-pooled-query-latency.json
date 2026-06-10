@@ -1,0 +1,228 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-10T16:47:12.636Z",
+  "environment": {
+    "provider": "supabase",
+    "region": "eu-central-1",
+    "plan": "free",
+    "clientLocation": "do-fra1-2vcpu",
+    "nodeVersion": "v22.22.3",
+    "harnessVersion": "0.1.0"
+  },
+  "results": [
+    {
+      "op": "pooled-query-latency",
+      "provider": "supabase",
+      "runs": 50,
+      "failures": 0,
+      "samples": [
+        {
+          "durationMs": 25.4,
+          "startedAt": "2026-06-10T16:46:43.824Z"
+        },
+        {
+          "durationMs": 41.3,
+          "startedAt": "2026-06-10T16:46:44.350Z"
+        },
+        {
+          "durationMs": 34.1,
+          "startedAt": "2026-06-10T16:46:44.892Z"
+        },
+        {
+          "durationMs": 29,
+          "startedAt": "2026-06-10T16:46:45.426Z"
+        },
+        {
+          "durationMs": 38,
+          "startedAt": "2026-06-10T16:46:45.955Z"
+        },
+        {
+          "durationMs": 33.1,
+          "startedAt": "2026-06-10T16:46:46.492Z"
+        },
+        {
+          "durationMs": 31.2,
+          "startedAt": "2026-06-10T16:46:47.026Z"
+        },
+        {
+          "durationMs": 27.2,
+          "startedAt": "2026-06-10T16:46:47.557Z"
+        },
+        {
+          "durationMs": 38.7,
+          "startedAt": "2026-06-10T16:46:48.084Z"
+        },
+        {
+          "durationMs": 28.4,
+          "startedAt": "2026-06-10T16:46:48.623Z"
+        },
+        {
+          "durationMs": 30,
+          "startedAt": "2026-06-10T16:46:49.151Z"
+        },
+        {
+          "durationMs": 29.9,
+          "startedAt": "2026-06-10T16:46:49.681Z"
+        },
+        {
+          "durationMs": 28.5,
+          "startedAt": "2026-06-10T16:46:50.212Z"
+        },
+        {
+          "durationMs": 25.6,
+          "startedAt": "2026-06-10T16:46:50.740Z"
+        },
+        {
+          "durationMs": 29.5,
+          "startedAt": "2026-06-10T16:46:51.266Z"
+        },
+        {
+          "durationMs": 29.4,
+          "startedAt": "2026-06-10T16:46:51.795Z"
+        },
+        {
+          "durationMs": 27.5,
+          "startedAt": "2026-06-10T16:46:52.325Z"
+        },
+        {
+          "durationMs": 31.8,
+          "startedAt": "2026-06-10T16:46:52.853Z"
+        },
+        {
+          "durationMs": 35,
+          "startedAt": "2026-06-10T16:46:53.386Z"
+        },
+        {
+          "durationMs": 40.6,
+          "startedAt": "2026-06-10T16:46:53.922Z"
+        },
+        {
+          "durationMs": 32,
+          "startedAt": "2026-06-10T16:46:54.463Z"
+        },
+        {
+          "durationMs": 33.2,
+          "startedAt": "2026-06-10T16:46:54.995Z"
+        },
+        {
+          "durationMs": 37.3,
+          "startedAt": "2026-06-10T16:46:55.529Z"
+        },
+        {
+          "durationMs": 43.1,
+          "startedAt": "2026-06-10T16:46:56.067Z"
+        },
+        {
+          "durationMs": 28.5,
+          "startedAt": "2026-06-10T16:46:56.610Z"
+        },
+        {
+          "durationMs": 30.1,
+          "startedAt": "2026-06-10T16:46:57.139Z"
+        },
+        {
+          "durationMs": 28.3,
+          "startedAt": "2026-06-10T16:46:57.670Z"
+        },
+        {
+          "durationMs": 31.2,
+          "startedAt": "2026-06-10T16:46:58.199Z"
+        },
+        {
+          "durationMs": 31.1,
+          "startedAt": "2026-06-10T16:46:58.730Z"
+        },
+        {
+          "durationMs": 26.6,
+          "startedAt": "2026-06-10T16:46:59.261Z"
+        },
+        {
+          "durationMs": 28.7,
+          "startedAt": "2026-06-10T16:46:59.788Z"
+        },
+        {
+          "durationMs": 31.4,
+          "startedAt": "2026-06-10T16:47:00.317Z"
+        },
+        {
+          "durationMs": 29.7,
+          "startedAt": "2026-06-10T16:47:00.849Z"
+        },
+        {
+          "durationMs": 28.1,
+          "startedAt": "2026-06-10T16:47:01.379Z"
+        },
+        {
+          "durationMs": 27.8,
+          "startedAt": "2026-06-10T16:47:01.907Z"
+        },
+        {
+          "durationMs": 37.1,
+          "startedAt": "2026-06-10T16:47:02.435Z"
+        },
+        {
+          "durationMs": 35.3,
+          "startedAt": "2026-06-10T16:47:02.972Z"
+        },
+        {
+          "durationMs": 28.2,
+          "startedAt": "2026-06-10T16:47:03.508Z"
+        },
+        {
+          "durationMs": 26.6,
+          "startedAt": "2026-06-10T16:47:04.037Z"
+        },
+        {
+          "durationMs": 33.7,
+          "startedAt": "2026-06-10T16:47:04.564Z"
+        },
+        {
+          "durationMs": 28.2,
+          "startedAt": "2026-06-10T16:47:05.098Z"
+        },
+        {
+          "durationMs": 28.8,
+          "startedAt": "2026-06-10T16:47:05.627Z"
+        },
+        {
+          "durationMs": 32.1,
+          "startedAt": "2026-06-10T16:47:06.157Z"
+        },
+        {
+          "durationMs": 34.1,
+          "startedAt": "2026-06-10T16:47:06.690Z"
+        },
+        {
+          "durationMs": 31.2,
+          "startedAt": "2026-06-10T16:47:07.225Z"
+        },
+        {
+          "durationMs": 27.9,
+          "startedAt": "2026-06-10T16:47:07.757Z"
+        },
+        {
+          "durationMs": 27.7,
+          "startedAt": "2026-06-10T16:47:08.286Z"
+        },
+        {
+          "durationMs": 29.7,
+          "startedAt": "2026-06-10T16:47:08.814Z"
+        },
+        {
+          "durationMs": 33.5,
+          "startedAt": "2026-06-10T16:47:09.343Z"
+        },
+        {
+          "durationMs": 27.9,
+          "startedAt": "2026-06-10T16:47:09.878Z"
+        }
+      ],
+      "stats": {
+        "medianMs": 29.9,
+        "p95Ms": 40.6,
+        "minMs": 25.4,
+        "maxMs": 43.1
+      }
+    }
+  ]
+}
