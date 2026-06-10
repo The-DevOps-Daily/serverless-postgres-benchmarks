@@ -22,8 +22,10 @@ export interface BenchProject {
 
 export interface Provider {
   readonly name: ProviderName;
-  /** Create a project and resolve when it accepts SQL connections. */
-  createProject(name: string): Promise<BenchProject>;
+  /** Create a project and resolve when it accepts SQL connections.
+   * computeSize is honored where the provider supports fixed sizes at
+   * creation (Supabase); Neon sizes via autoscaling limits instead. */
+  createProject(name: string, options?: { computeSize?: "small" }): Promise<BenchProject>;
   /** Delete a project by id. Must throw if the project is not bench-*. */
   deleteProject(id: string): Promise<void>;
   /** List bench-* projects (for teardown). */

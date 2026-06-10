@@ -27,7 +27,7 @@ async function api<T>(path: string, init?: RequestInit): Promise<T> {
 export const supabase: Provider = {
   name: "supabase",
 
-  async createProject(name: string): Promise<BenchProject> {
+  async createProject(name: string, options?: { computeSize?: "small" }): Promise<BenchProject> {
     assertBenchName(name);
     const dbPass = `Bench_${randomBytes(18).toString("base64url")}`;
     const created = await api<{ id: string; ref?: string }>("/projects", {
@@ -37,6 +37,7 @@ export const supabase: Provider = {
         organization_id: config.supabase.orgId(),
         region: config.supabase.region,
         db_pass: dbPass,
+        ...(options?.computeSize ? { desired_instance_size: options.computeSize } : {}),
       }),
     });
     const ref = created.ref ?? created.id;

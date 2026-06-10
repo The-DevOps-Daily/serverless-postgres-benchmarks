@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-10T21:19:10.781Z",
+  "environment": {
+    "provider": "supabase",
+    "region": "eu-central-1",
+    "plan": "pro",
+    "clientLocation": "do-fra1-2vcpu",
+    "nodeVersion": "v22.22.3",
+    "harnessVersion": "0.1.0"
+  },
+  "results": [
+    {
+      "op": "replica",
+      "provider": "supabase",
+      "runs": 5,
+      "failures": 5,
+      "samples": [
+        {
+          "durationMs": 186.1,
+          "startedAt": "2026-06-10T21:18:27.829Z",
+          "error": "Supabase API POST /projects/wjfumpvwlioxktwrkcfp/read-replicas/setup -> 400: {\"message\":\"Read replicas require a minimum size of small\"}"
+        },
+        {
+          "durationMs": 229,
+          "startedAt": "2026-06-10T21:18:38.022Z",
+          "error": "Supabase API POST /projects/wjfumpvwlioxktwrkcfp/read-replicas/setup -> 400: {\"message\":\"Read replicas require a minimum size of small\"}"
+        },
+        {
+          "durationMs": 153.4,
+          "startedAt": "2026-06-10T21:18:48.256Z",
+          "error": "Supabase API POST /projects/wjfumpvwlioxktwrkcfp/read-replicas/setup -> 400: {\"message\":\"Read replicas require a minimum size of small\"}"
+        },
+        {
+          "durationMs": 136.3,
+          "startedAt": "2026-06-10T21:18:58.415Z",
+          "error": "Supabase API POST /projects/wjfumpvwlioxktwrkcfp/read-replicas/setup -> 400: {\"message\":\"Read replicas require a minimum size of small\"}"
+        },
+        {
+          "durationMs": 154.4,
+          "startedAt": "2026-06-10T21:19:08.558Z",
+          "error": "Supabase API POST /projects/wjfumpvwlioxktwrkcfp/read-replicas/setup -> 400: {\"message\":\"Read replicas require a minimum size of small\"}"
+        }
+      ],
+      "stats": {
+        "medianMs": null,
+        "p95Ms": null,
+        "minMs": null,
+        "maxMs": null
+      }
+    }
+  ]
+}

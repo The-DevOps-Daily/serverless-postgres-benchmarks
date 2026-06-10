@@ -197,7 +197,8 @@ export async function replicaOp(provider: Provider, runs: number): Promise<OpRes
   if (!provider.createReadReplica || !provider.deleteReadReplica) {
     throw new Error(`${provider.name} read replicas are not implemented`);
   }
-  const project = await provider.createProject(uniqueName("repl", 0));
+  // Supabase gates read replicas behind Small compute or larger
+  const project = await provider.createProject(uniqueName("repl", 0), { computeSize: "small" });
   await seed(project.connectionString, 10_000);
   try {
     return await timeOp({ op: "replica", provider: provider.name, runs, pauseMs: 10_000 }, async () => {
