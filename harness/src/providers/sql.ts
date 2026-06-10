@@ -23,6 +23,9 @@ export async function queryOnce(connectionString: string): Promise<number> {
     connectionTimeoutMillis: 15_000,
     ssl: tlsFor(connectionString),
   });
+  // Server restarts (e.g. compute resize) emit async 'error' events on idle
+  // clients; without a handler Node treats that as fatal and kills the run.
+  client.on("error", () => {});
   const t0 = performance.now();
   try {
     await client.connect();
