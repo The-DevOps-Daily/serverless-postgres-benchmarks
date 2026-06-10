@@ -5,10 +5,16 @@ export interface BenchProject {
   id: string;
   /** Always starts with "bench-" */
   name: string;
-  /** Direct (non-pooled) Postgres connection string */
+  /** Primary Postgres connection string reachable over IPv4 */
   connectionString: string;
   /** Pooled connection string, when the provider exposes one */
   pooledConnectionString?: string;
+  /**
+   * True direct-to-compute connection when it differs from connectionString
+   * (Supabase free-plan direct hosts are IPv6-only, so connectionString
+   * carries the session pooler there and this carries the direct host).
+   */
+  directConnectionString?: string;
 }
 
 export interface Provider {

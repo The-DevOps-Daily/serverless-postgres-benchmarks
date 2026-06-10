@@ -67,6 +67,7 @@ export const supabase: Provider = {
       name,
       connectionString: `postgresql://${base}:5432/${primary.db_name}?sslmode=require`,
       pooledConnectionString: `postgresql://${base}:6543/${primary.db_name}?sslmode=require`,
+      directConnectionString: `postgresql://postgres:${pass}@db.${ref}.supabase.co:5432/${primary.db_name}?sslmode=require`,
     };
     await firstSuccessfulQuery(project.connectionString, { timeoutMs: 240_000 });
     return project;

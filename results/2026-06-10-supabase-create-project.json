@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-10T16:36:54.197Z",
+  "environment": {
+    "provider": "supabase",
+    "region": "eu-central-1",
+    "plan": "free",
+    "clientLocation": "raspberry-pi-sofia",
+    "nodeVersion": "v24.14.0",
+    "harnessVersion": "0.1.0"
+  },
+  "results": [
+    {
+      "op": "create-project",
+      "provider": "supabase",
+      "runs": 1,
+      "failures": 1,
+      "samples": [
+        {
+          "durationMs": 246211.4,
+          "startedAt": "2026-06-10T16:32:47.981Z",
+          "error": "No successful query within 240000ms; last error: self-signed certificate in certificate chain"
+        }
+      ],
+      "stats": {
+        "medianMs": null,
+        "p95Ms": null,
+        "minMs": null,
+        "maxMs": null
+      }
+    }
+  ]
+}

@@ -24,6 +24,7 @@ run neon query-latency 50
 run neon pooled-query-latency 50
 run supabase query-latency 50
 run supabase pooled-query-latency 50
+run supabase direct-query-latency 50   # IPv6-only host; needs an IPv6 client
 run neon cold-start 20
 
 # Management-API ops

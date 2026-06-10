@@ -3,15 +3,24 @@ import { queryOnce, firstSuccessfulQuery, tlsFor } from "./providers/sql.js";
 import { sleep, timeOp } from "./timing.js";
 import type { OpResult, Provider } from "./types.js";
 
-export type OpName = "create-project" | "query-latency" | "pooled-query-latency" | "cold-start" | "branch";
+export type OpName =
+  | "create-project"
+  | "query-latency"
+  | "pooled-query-latency"
+  | "direct-query-latency"
+  | "cold-start"
+  | "branch";
 
 export const ALL_OPS: OpName[] = [
   "create-project",
   "query-latency",
   "pooled-query-latency",
+  "direct-query-latency",
   "cold-start",
   "branch",
 ];
+
+export type LatencyTarget = "primary" | "pooled" | "direct";
 
 function uniqueName(op: string, run: number): string {
   const suffix = `${process.pid.toString(36)}${run.toString(36)}${Math.floor(performance.now()).toString(36)}`;
@@ -39,26 +48,30 @@ export async function createProjectOp(provider: Provider, runs: number): Promise
  * query-latency: one shared project, N cold connections each running
  * `select 1`. Measures connect + auth + query round trip (what a serverless
  * function pays per invocation without a pooler-side warm connection).
+ * Targets: primary (provider's default IPv4 path), pooled (transaction
+ * pooler), direct (straight to compute, IPv6 on Supabase free).
  */
 export async function queryLatencyOp(
   provider: Provider,
   runs: number,
-  { pooled = false }: { pooled?: boolean } = {},
+  { target = "primary" }: { target?: LatencyTarget } = {},
 ): Promise<OpResult> {
-  const project = await provider.createProject(uniqueName(pooled ? "plat" : "qlat", 0));
-  const connectionString = pooled
-    ? project.pooledConnectionString ?? project.connectionString
-    : project.connectionString;
-  // A couple of warm-up queries so the first sample isn't a compute cold start
-  await queryOnce(connectionString);
-  await queryOnce(connectionString);
+  const opName: OpName =
+    target === "pooled" ? "pooled-query-latency" : target === "direct" ? "direct-query-latency" : "query-latency";
+  const project = await provider.createProject(uniqueName(opName.slice(0, 4), 0));
+  const connectionString =
+    target === "pooled"
+      ? project.pooledConnectionString ?? project.connectionString
+      : target === "direct"
+        ? project.directConnectionString ?? project.connectionString
+        : project.connectionString;
   try {
-    return await timeOp(
-      { op: pooled ? "pooled-query-latency" : "query-latency", provider: provider.name, runs, pauseMs: 500 },
-      async () => {
-        await queryOnce(connectionString);
-      },
-    );
+    // A couple of warm-up queries so the first sample isn't a compute cold start
+    await queryOnce(connectionString);
+    await queryOnce(connectionString);
+    return await timeOp({ op: opName, provider: provider.name, runs, pauseMs: 500 }, async () => {
+      await queryOnce(connectionString);
+    });
   } finally {
     await provider.deleteProject(project.id);
   }

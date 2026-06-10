@@ -76,7 +76,10 @@ async function main() {
       result = await queryLatencyOp(provider, args.runs);
       break;
     case "pooled-query-latency":
-      result = await queryLatencyOp(provider, args.runs, { pooled: true });
+      result = await queryLatencyOp(provider, args.runs, { target: "pooled" });
+      break;
+    case "direct-query-latency":
+      result = await queryLatencyOp(provider, args.runs, { target: "direct" });
       break;
     case "cold-start":
       result = await coldStartOp(provider, args.runs);
