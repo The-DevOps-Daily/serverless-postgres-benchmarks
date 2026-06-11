@@ -1,0 +1,388 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-11T04:42:47.552Z",
+  "kind": "cost-model",
+  "note": "List prices June 2026; see src/cost/prices.ts for sources and VERIFY flags.",
+  "stages": [
+    {
+      "label": "launch month",
+      "workload": {
+        "label": "launch month",
+        "avgComputeCu": 0.25,
+        "activeFraction": 0.2,
+        "dbSizeGb": 1,
+        "mau": 500,
+        "branchesPerMonth": 10,
+        "branchLifetimeHours": 4,
+        "egressGb": 5
+      },
+      "neonLaunch": {
+        "totalUsd": 5.28,
+        "lines": [
+          {
+            "item": "compute (0.25 CU avg, 20% active)",
+            "usd": 3.87
+          },
+          {
+            "item": "storage (1 GB)",
+            "usd": 0.35
+          },
+          {
+            "item": "10 preview branches (4h each)",
+            "usd": 1.06
+          }
+        ]
+      },
+      "neonScale": {
+        "totalUsd": 10.67,
+        "lines": [
+          {
+            "item": "compute (0.25 CU avg, 20% active)",
+            "usd": 8.1
+          },
+          {
+            "item": "storage (1 GB)",
+            "usd": 0.35
+          },
+          {
+            "item": "10 preview branches (4h each)",
+            "usd": 2.22
+          }
+        ]
+      },
+      "supabasePro": {
+        "totalUsd": 25.54,
+        "lines": [
+          {
+            "item": "Pro base (per org)",
+            "usd": 25
+          },
+          {
+            "item": "compute (micro, 24/7, after $10 credits)",
+            "usd": 0
+          },
+          {
+            "item": "storage beyond 8 GB included",
+            "usd": 0
+          },
+          {
+            "item": "MAU beyond 100,000 included",
+            "usd": 0
+          },
+          {
+            "item": "10 preview branches (4h each, no credits)",
+            "usd": 0.54
+          },
+          {
+            "item": "egress beyond 250 GB included",
+            "usd": 0
+          }
+        ]
+      }
+    },
+    {
+      "label": "first customers",
+      "workload": {
+        "label": "first customers",
+        "avgComputeCu": 0.25,
+        "activeFraction": 0.45,
+        "dbSizeGb": 5,
+        "mau": 5000,
+        "branchesPerMonth": 30,
+        "branchLifetimeHours": 6,
+        "egressGb": 25
+      },
+      "neonLaunch": {
+        "totalUsd": 15.23,
+        "lines": [
+          {
+            "item": "compute (0.25 CU avg, 45% active)",
+            "usd": 8.71
+          },
+          {
+            "item": "storage (5 GB)",
+            "usd": 1.75
+          },
+          {
+            "item": "30 preview branches (6h each)",
+            "usd": 4.77
+          }
+        ]
+      },
+      "neonScale": {
+        "totalUsd": 29.97,
+        "lines": [
+          {
+            "item": "compute (0.25 CU avg, 45% active)",
+            "usd": 18.23
+          },
+          {
+            "item": "storage (5 GB)",
+            "usd": 1.75
+          },
+          {
+            "item": "30 preview branches (6h each)",
+            "usd": 9.99
+          }
+        ]
+      },
+      "supabasePro": {
+        "totalUsd": 27.42,
+        "lines": [
+          {
+            "item": "Pro base (per org)",
+            "usd": 25
+          },
+          {
+            "item": "compute (micro, 24/7, after $10 credits)",
+            "usd": 0
+          },
+          {
+            "item": "storage beyond 8 GB included",
+            "usd": 0
+          },
+          {
+            "item": "MAU beyond 100,000 included",
+            "usd": 0
+          },
+          {
+            "item": "30 preview branches (6h each, no credits)",
+            "usd": 2.42
+          },
+          {
+            "item": "egress beyond 250 GB included",
+            "usd": 0
+          }
+        ]
+      }
+    },
+    {
+      "label": "product-market fit",
+      "workload": {
+        "label": "product-market fit",
+        "avgComputeCu": 0.5,
+        "activeFraction": 0.75,
+        "dbSizeGb": 20,
+        "mau": 30000,
+        "branchesPerMonth": 60,
+        "branchLifetimeHours": 8,
+        "egressGb": 100
+      },
+      "neonLaunch": {
+        "totalUsd": 48.74,
+        "lines": [
+          {
+            "item": "compute (0.5 CU avg, 75% active)",
+            "usd": 29.02
+          },
+          {
+            "item": "storage (20 GB)",
+            "usd": 7
+          },
+          {
+            "item": "60 preview branches (8h each)",
+            "usd": 12.72
+          }
+        ]
+      },
+      "neonScale": {
+        "totalUsd": 94.41,
+        "lines": [
+          {
+            "item": "compute (0.5 CU avg, 75% active)",
+            "usd": 60.77
+          },
+          {
+            "item": "storage (20 GB)",
+            "usd": 7
+          },
+          {
+            "item": "60 preview branches (8h each)",
+            "usd": 26.64
+          }
+        ]
+      },
+      "supabasePro": {
+        "totalUsd": 32.95,
+        "lines": [
+          {
+            "item": "Pro base (per org)",
+            "usd": 25
+          },
+          {
+            "item": "compute (micro, 24/7, after $10 credits)",
+            "usd": 0
+          },
+          {
+            "item": "storage beyond 8 GB included",
+            "usd": 1.5
+          },
+          {
+            "item": "MAU beyond 100,000 included",
+            "usd": 0
+          },
+          {
+            "item": "60 preview branches (8h each, no credits)",
+            "usd": 6.45
+          },
+          {
+            "item": "egress beyond 250 GB included",
+            "usd": 0
+          }
+        ]
+      }
+    },
+    {
+      "label": "growth",
+      "workload": {
+        "label": "growth",
+        "avgComputeCu": 1,
+        "activeFraction": 0.95,
+        "dbSizeGb": 60,
+        "mau": 120000,
+        "branchesPerMonth": 120,
+        "branchLifetimeHours": 8,
+        "egressGb": 400
+      },
+      "neonLaunch": {
+        "totalUsd": 119.95,
+        "lines": [
+          {
+            "item": "compute (1 CU avg, 95% active)",
+            "usd": 73.51
+          },
+          {
+            "item": "storage (60 GB)",
+            "usd": 21
+          },
+          {
+            "item": "120 preview branches (8h each)",
+            "usd": 25.44
+          }
+        ]
+      },
+      "neonScale": {
+        "totalUsd": 228.24,
+        "lines": [
+          {
+            "item": "compute (1 CU avg, 95% active)",
+            "usd": 153.96
+          },
+          {
+            "item": "storage (60 GB)",
+            "usd": 21
+          },
+          {
+            "item": "120 preview branches (8h each)",
+            "usd": 53.28
+          }
+        ]
+      },
+      "supabasePro": {
+        "totalUsd": 132.9,
+        "lines": [
+          {
+            "item": "Pro base (per org)",
+            "usd": 25
+          },
+          {
+            "item": "compute (small, 24/7, after $10 credits)",
+            "usd": 10
+          },
+          {
+            "item": "storage beyond 8 GB included",
+            "usd": 6.5
+          },
+          {
+            "item": "MAU beyond 100,000 included",
+            "usd": 65
+          },
+          {
+            "item": "120 preview branches (8h each, no credits)",
+            "usd": 12.9
+          },
+          {
+            "item": "egress beyond 250 GB included",
+            "usd": 13.5
+          }
+        ]
+      }
+    },
+    {
+      "label": "scale",
+      "workload": {
+        "label": "scale",
+        "avgComputeCu": 2,
+        "activeFraction": 1,
+        "dbSizeGb": 200,
+        "mau": 400000,
+        "branchesPerMonth": 200,
+        "branchLifetimeHours": 10,
+        "egressGb": 1500
+      },
+      "neonLaunch": {
+        "totalUsd": 277.76,
+        "lines": [
+          {
+            "item": "compute (2 CU avg, 100% active)",
+            "usd": 154.76
+          },
+          {
+            "item": "storage (200 GB)",
+            "usd": 70
+          },
+          {
+            "item": "200 preview branches (10h each)",
+            "usd": 53
+          }
+        ]
+      },
+      "neonScale": {
+        "totalUsd": 505.12,
+        "lines": [
+          {
+            "item": "compute (2 CU avg, 100% active)",
+            "usd": 324.12
+          },
+          {
+            "item": "storage (200 GB)",
+            "usd": 70
+          },
+          {
+            "item": "200 preview branches (10h each)",
+            "usd": 111
+          }
+        ]
+      },
+      "supabasePro": {
+        "totalUsd": 1193.38,
+        "lines": [
+          {
+            "item": "Pro base (per org)",
+            "usd": 25
+          },
+          {
+            "item": "compute (medium, 24/7, after $10 credits)",
+            "usd": 30
+          },
+          {
+            "item": "storage beyond 8 GB included",
+            "usd": 24
+          },
+          {
+            "item": "MAU beyond 100,000 included",
+            "usd": 975
+          },
+          {
+            "item": "200 preview branches (10h each, no credits)",
+            "usd": 26.88
+          },
+          {
+            "item": "egress beyond 250 GB included",
+            "usd": 112.5
+          }
+        ]
+      }
+    }
+  ]
+}
