@@ -2,6 +2,7 @@ function build(files) {
   const latest = new Map();
   const history = new Map();
   for (const { data } of files.sort((a, b) => a.file.localeCompare(b.file))) {
+    if (!Array.isArray(data.results)) continue; // e.g. cost-model files
     const date = data.generatedAt.slice(0, 10);
     for (const r of data.results) {
       // concurrency runs at several client levels; keep them distinct
