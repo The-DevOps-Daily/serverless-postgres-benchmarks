@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-06-11T05:24:07.964Z",
+  "generatedAt": "2026-06-11T09:38:57.844Z",
   "environment": {
     "provider": "supabase",
     "region": "eu-central-1",
@@ -13,91 +13,107 @@
     {
       "op": "resize",
       "provider": "supabase",
-      "runs": 8,
+      "runs": 10,
       "failures": 0,
       "samples": [
         {
-          "durationMs": 78185,
-          "startedAt": "2026-06-11T04:55:33.632Z",
+          "durationMs": 139448.5,
+          "startedAt": "2026-06-11T09:02:37.875Z",
           "phases": {
-            "apiMs": 69005.58154900001,
-            "downtimeMs": 73600.551508
+            "apiMs": 105966.40118799999,
+            "downtimeMs": 91798.797383
           }
         },
         {
-          "durationMs": 42736.9,
-          "startedAt": "2026-06-11T04:59:51.822Z",
+          "durationMs": 42854.5,
+          "startedAt": "2026-06-11T09:07:57.390Z",
           "phases": {
-            "apiMs": 38012.20348600001,
-            "downtimeMs": 38644.861375999986
+            "apiMs": 39244.96041100001,
+            "downtimeMs": 38572.227055000025
           }
         },
         {
-          "durationMs": 45672.7,
-          "startedAt": "2026-06-11T05:03:34.660Z",
+          "durationMs": 43204.6,
+          "startedAt": "2026-06-11T09:11:40.294Z",
           "phases": {
-            "apiMs": 38955.268156999955,
-            "downtimeMs": 41633.43796300003
+            "apiMs": 39595.78720300004,
+            "downtimeMs": 38570.86008699995
           }
         },
         {
-          "durationMs": 70908.4,
-          "startedAt": "2026-06-11T05:07:20.368Z",
+          "durationMs": 43602.8,
+          "startedAt": "2026-06-11T09:15:23.599Z",
           "phases": {
-            "apiMs": 62294.99156899995,
-            "downtimeMs": 61303.73270100006
+            "apiMs": 39127.31588500005,
+            "downtimeMs": 38808.94563099998
           }
         },
         {
-          "durationMs": 49527.4,
-          "startedAt": "2026-06-11T05:11:31.368Z",
+          "durationMs": 45261.6,
+          "startedAt": "2026-06-11T09:19:07.214Z",
           "phases": {
-            "apiMs": 37815.79434100003,
-            "downtimeMs": 40772.899328000145
+            "apiMs": 38142.909539999906,
+            "downtimeMs": 40982.11080799997
           }
         },
         {
-          "durationMs": 45341.7,
-          "startedAt": "2026-06-11T05:15:20.995Z",
+          "durationMs": 43654.4,
+          "startedAt": "2026-06-11T09:22:52.576Z",
           "phases": {
-            "apiMs": 38360.85944800009,
-            "downtimeMs": 41065.312311999965
+            "apiMs": 39218.29367100005,
+            "downtimeMs": 39122.04479800002
           }
         },
         {
-          "durationMs": 45716.7,
-          "startedAt": "2026-06-11T05:19:06.437Z",
+          "durationMs": 43154.2,
+          "startedAt": "2026-06-11T09:26:36.331Z",
           "phases": {
-            "apiMs": 38627.710290000075,
-            "downtimeMs": 41377.16690999991
+            "apiMs": 38391.58761599986,
+            "downtimeMs": 38879.73331700009
           }
         },
         {
-          "durationMs": 73441.3,
-          "startedAt": "2026-06-11T05:22:52.254Z",
+          "durationMs": 43159.1,
+          "startedAt": "2026-06-11T09:30:19.584Z",
           "phases": {
-            "apiMs": 66540.232265,
-            "downtimeMs": 63790.87220199988
+            "apiMs": 39587.094752999954,
+            "downtimeMs": 38844.82710499992
+          }
+        },
+        {
+          "durationMs": 45666.4,
+          "startedAt": "2026-06-11T09:34:02.843Z",
+          "phases": {
+            "apiMs": 38566.6058850002,
+            "downtimeMs": 41354.06020099996
+          }
+        },
+        {
+          "durationMs": 66974.3,
+          "startedAt": "2026-06-11T09:37:48.609Z",
+          "phases": {
+            "apiMs": 4638.447232000064,
+            "downtimeMs": 18037.880739999935
           }
         }
       ],
       "stats": {
-        "medianMs": 45716.7,
-        "p95Ms": 78185,
-        "minMs": 42736.9,
-        "maxMs": 78185,
+        "medianMs": 43602.8,
+        "p95Ms": 139448.5,
+        "minMs": 42854.5,
+        "maxMs": 139448.5,
         "phases": {
           "apiMs": {
-            "medianMs": 38627.7,
-            "p95Ms": 69005.6,
-            "minMs": 37815.8,
-            "maxMs": 69005.6
+            "medianMs": 39127.3,
+            "p95Ms": 105966.4,
+            "minMs": 4638.4,
+            "maxMs": 105966.4
           },
           "downtimeMs": {
-            "medianMs": 41377.2,
-            "p95Ms": 73600.6,
-            "minMs": 38644.9,
-            "maxMs": 73600.6
+            "medianMs": 38844.8,
+            "p95Ms": 91798.8,
+            "minMs": 18037.9,
+            "maxMs": 91798.8
           }
         }
       }

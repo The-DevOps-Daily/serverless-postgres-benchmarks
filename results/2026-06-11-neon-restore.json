@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-11T09:59:57.420Z",
+  "environment": {
+    "provider": "neon",
+    "region": "aws-eu-central-1",
+    "plan": "scale",
+    "clientLocation": "do-fra1-2vcpu",
+    "nodeVersion": "v22.22.3",
+    "harnessVersion": "0.1.0"
+  },
+  "results": [
+    {
+      "op": "restore",
+      "provider": "neon",
+      "runs": 8,
+      "failures": 0,
+      "samples": [
+        {
+          "durationMs": 5817.5,
+          "startedAt": "2026-06-11T09:57:30.239Z",
+          "phases": {
+            "apiMs": 4762.362676999997,
+            "sqlReadyMs": 5817.26965100001
+          }
+        },
+        {
+          "durationMs": 4619,
+          "startedAt": "2026-06-11T09:57:51.058Z",
+          "phases": {
+            "apiMs": 3563.617769999997,
+            "sqlReadyMs": 4618.903868999987
+          }
+        },
+        {
+          "durationMs": 4248.8,
+          "startedAt": "2026-06-11T09:58:10.679Z",
+          "phases": {
+            "apiMs": 3187.6740550000104,
+            "sqlReadyMs": 4248.725293000025
+          }
+        },
+        {
+          "durationMs": 5433.1,
+          "startedAt": "2026-06-11T09:58:29.929Z",
+          "phases": {
+            "apiMs": 4367.021474999987,
+            "sqlReadyMs": 5433.053528999997
+          }
+        },
+        {
+          "durationMs": 5733.9,
+          "startedAt": "2026-06-11T09:58:50.362Z",
+          "phases": {
+            "apiMs": 4673.137970000011,
+            "sqlReadyMs": 5733.838015000016
+          }
+        },
+        {
+          "durationMs": 5641,
+          "startedAt": "2026-06-11T09:59:11.097Z",
+          "phases": {
+            "apiMs": 4577.758847999998,
+            "sqlReadyMs": 5640.939649000007
+          }
+        },
+        {
+          "durationMs": 4479,
+          "startedAt": "2026-06-11T09:59:31.740Z",
+          "phases": {
+            "apiMs": 3420.9259250000177,
+            "sqlReadyMs": 4478.992503000016
+          }
+        },
+        {
+          "durationMs": 5627.9,
+          "startedAt": "2026-06-11T09:59:51.219Z",
+          "phases": {
+            "apiMs": 4569.959677000006,
+            "sqlReadyMs": 5627.877883000008
+          }
+        }
+      ],
+      "stats": {
+        "medianMs": 5433.1,
+        "p95Ms": 5817.5,
+        "minMs": 4248.8,
+        "maxMs": 5817.5,
+        "phases": {
+          "apiMs": {
+            "medianMs": 4367,
+            "p95Ms": 4762.4,
+            "minMs": 3187.7,
+            "maxMs": 4762.4
+          },
+          "sqlReadyMs": {
+            "medianMs": 5433.1,
+            "p95Ms": 5817.3,
+            "minMs": 4248.7,
+            "maxMs": 5817.3
+          }
+        }
+      }
+    }
+  ]
+}

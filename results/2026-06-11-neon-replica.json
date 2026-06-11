@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-11T09:41:23.436Z",
+  "environment": {
+    "provider": "neon",
+    "region": "aws-eu-central-1",
+    "plan": "scale",
+    "clientLocation": "do-fra1-2vcpu",
+    "nodeVersion": "v22.22.3",
+    "harnessVersion": "0.1.0"
+  },
+  "results": [
+    {
+      "op": "replica",
+      "provider": "neon",
+      "runs": 8,
+      "failures": 0,
+      "samples": [
+        {
+          "durationMs": 8219.8,
+          "startedAt": "2026-06-11T09:39:06.898Z",
+          "phases": {
+            "replicaQueryableMs": 2944.6374849999993
+          }
+        },
+        {
+          "durationMs": 8171.9,
+          "startedAt": "2026-06-11T09:39:25.129Z",
+          "phases": {
+            "replicaQueryableMs": 2911.6240639999996
+          }
+        },
+        {
+          "durationMs": 8018.9,
+          "startedAt": "2026-06-11T09:39:43.301Z",
+          "phases": {
+            "replicaQueryableMs": 2755.620117999999
+          }
+        },
+        {
+          "durationMs": 8018,
+          "startedAt": "2026-06-11T09:40:01.321Z",
+          "phases": {
+            "replicaQueryableMs": 2755.601689000003
+          }
+        },
+        {
+          "durationMs": 8043.2,
+          "startedAt": "2026-06-11T09:40:19.340Z",
+          "phases": {
+            "replicaQueryableMs": 2777.8106439999974
+          }
+        },
+        {
+          "durationMs": 8047,
+          "startedAt": "2026-06-11T09:40:37.384Z",
+          "phases": {
+            "replicaQueryableMs": 2783.143935
+          }
+        },
+        {
+          "durationMs": 7984.8,
+          "startedAt": "2026-06-11T09:40:55.431Z",
+          "phases": {
+            "replicaQueryableMs": 2725.2644430000073
+          }
+        },
+        {
+          "durationMs": 9149.2,
+          "startedAt": "2026-06-11T09:41:13.416Z",
+          "phases": {
+            "replicaQueryableMs": 3889.6179319999937
+          }
+        }
+      ],
+      "stats": {
+        "medianMs": 8043.2,
+        "p95Ms": 9149.2,
+        "minMs": 7984.8,
+        "maxMs": 9149.2,
+        "phases": {
+          "replicaQueryableMs": {
+            "medianMs": 2777.8,
+            "p95Ms": 3889.6,
+            "minMs": 2725.3,
+            "maxMs": 3889.6
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-06-11T04:52:38.589Z",
+  "generatedAt": "2026-06-11T09:55:53.913Z",
   "environment": {
     "provider": "supabase",
     "region": "eu-central-1",
@@ -14,55 +14,53 @@
       "op": "replica",
       "provider": "supabase",
       "runs": 5,
-      "failures": 0,
+      "failures": 1,
       "samples": [
         {
-          "durationMs": 181664.1,
-          "startedAt": "2026-06-11T04:36:41.862Z",
+          "durationMs": 473.8,
+          "startedAt": "2026-06-11T09:43:10.211Z",
+          "error": "Supabase API POST /projects/pljqxiqyastddcdcinpp/read-replicas/setup -> 406: {\"message\":\"Failed to check for latest completed physical backup\",\"errorEventId\":\"92536910931c495abd340c55980bf3d0\"}"
+        },
+        {
+          "durationMs": 183306.8,
+          "startedAt": "2026-06-11T09:43:20.691Z",
           "phases": {
-            "replicaQueryableMs": 175631.11927900004
+            "replicaQueryableMs": 177110.839395
           }
         },
         {
-          "durationMs": 184395.1,
-          "startedAt": "2026-06-11T04:39:53.528Z",
+          "durationMs": 181922.1,
+          "startedAt": "2026-06-11T09:46:33.999Z",
           "phases": {
-            "replicaQueryableMs": 176397.43693700002
+            "replicaQueryableMs": 175796.370698
           }
         },
         {
-          "durationMs": 181832.9,
-          "startedAt": "2026-06-11T04:43:07.926Z",
+          "durationMs": 174655.8,
+          "startedAt": "2026-06-11T09:49:45.923Z",
           "phases": {
-            "replicaQueryableMs": 175806.65613999998
+            "replicaQueryableMs": 168650.29067400005
           }
         },
         {
-          "durationMs": 182786.8,
-          "startedAt": "2026-06-11T04:46:19.760Z",
+          "durationMs": 181425.2,
+          "startedAt": "2026-06-11T09:52:50.580Z",
           "phases": {
-            "replicaQueryableMs": 176676.20915100002
-          }
-        },
-        {
-          "durationMs": 183968.3,
-          "startedAt": "2026-06-11T04:49:32.551Z",
-          "phases": {
-            "replicaQueryableMs": 177982.7434429999
+            "replicaQueryableMs": 175399.30467800004
           }
         }
       ],
       "stats": {
-        "medianMs": 182786.8,
-        "p95Ms": 184395.1,
-        "minMs": 181664.1,
-        "maxMs": 184395.1,
+        "medianMs": 181425.2,
+        "p95Ms": 183306.8,
+        "minMs": 174655.8,
+        "maxMs": 183306.8,
         "phases": {
           "replicaQueryableMs": {
-            "medianMs": 176397.4,
-            "p95Ms": 177982.7,
-            "minMs": 175631.1,
-            "maxMs": 177982.7
+            "medianMs": 175399.3,
+            "p95Ms": 177110.8,
+            "minMs": 168650.3,
+            "maxMs": 177110.8
           }
         }
       }
