@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-11T05:24:07.964Z",
+  "environment": {
+    "provider": "supabase",
+    "region": "eu-central-1",
+    "plan": "pro",
+    "clientLocation": "do-fra1-2vcpu",
+    "nodeVersion": "v22.22.3",
+    "harnessVersion": "0.1.0"
+  },
+  "results": [
+    {
+      "op": "resize",
+      "provider": "supabase",
+      "runs": 8,
+      "failures": 0,
+      "samples": [
+        {
+          "durationMs": 78185,
+          "startedAt": "2026-06-11T04:55:33.632Z",
+          "phases": {
+            "apiMs": 69005.58154900001,
+            "downtimeMs": 73600.551508
+          }
+        },
+        {
+          "durationMs": 42736.9,
+          "startedAt": "2026-06-11T04:59:51.822Z",
+          "phases": {
+            "apiMs": 38012.20348600001,
+            "downtimeMs": 38644.861375999986
+          }
+        },
+        {
+          "durationMs": 45672.7,
+          "startedAt": "2026-06-11T05:03:34.660Z",
+          "phases": {
+            "apiMs": 38955.268156999955,
+            "downtimeMs": 41633.43796300003
+          }
+        },
+        {
+          "durationMs": 70908.4,
+          "startedAt": "2026-06-11T05:07:20.368Z",
+          "phases": {
+            "apiMs": 62294.99156899995,
+            "downtimeMs": 61303.73270100006
+          }
+        },
+        {
+          "durationMs": 49527.4,
+          "startedAt": "2026-06-11T05:11:31.368Z",
+          "phases": {
+            "apiMs": 37815.79434100003,
+            "downtimeMs": 40772.899328000145
+          }
+        },
+        {
+          "durationMs": 45341.7,
+          "startedAt": "2026-06-11T05:15:20.995Z",
+          "phases": {
+            "apiMs": 38360.85944800009,
+            "downtimeMs": 41065.312311999965
+          }
+        },
+        {
+          "durationMs": 45716.7,
+          "startedAt": "2026-06-11T05:19:06.437Z",
+          "phases": {
+            "apiMs": 38627.710290000075,
+            "downtimeMs": 41377.16690999991
+          }
+        },
+        {
+          "durationMs": 73441.3,
+          "startedAt": "2026-06-11T05:22:52.254Z",
+          "phases": {
+            "apiMs": 66540.232265,
+            "downtimeMs": 63790.87220199988
+          }
+        }
+      ],
+      "stats": {
+        "medianMs": 45716.7,
+        "p95Ms": 78185,
+        "minMs": 42736.9,
+        "maxMs": 78185,
+        "phases": {
+          "apiMs": {
+            "medianMs": 38627.7,
+            "p95Ms": 69005.6,
+            "minMs": 37815.8,
+            "maxMs": 69005.6
+          },
+          "downtimeMs": {
+            "medianMs": 41377.2,
+            "p95Ms": 73600.6,
+            "minMs": 38644.9,
+            "maxMs": 73600.6
+          }
+        }
+      }
+    }
+  ]
+}
