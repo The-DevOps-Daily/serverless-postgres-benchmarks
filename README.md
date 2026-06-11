@@ -47,6 +47,10 @@ npm run teardown       # delete every bench-* resource on both platforms
 
 You need your own Neon API key and Supabase personal access token. The harness only ever creates and deletes resources whose names start with `bench-`; it refuses to touch anything else.
 
+## Contributing
+
+These benchmarks are open source on purpose: if something in the methodology looks off, there is a fairer way to measure an operation, or your own runs disagree with ours, open an issue or send a pull request. Corrections are welcome and get credited in the write-ups.
+
 ## Results
 
 See `results/` for raw data. Published write-ups based on this harness are listed in [RESULTS.md](results/README.md) as they land.
