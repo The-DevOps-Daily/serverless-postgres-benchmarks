@@ -7,8 +7,12 @@ function build(files) {
     for (const r of data.results) {
       // concurrency runs at several client levels; keep them distinct
       const level = r.op === "concurrency" ? r.samples.find((s) => s.phases?.clients)?.phases.clients : null;
-      const key = `${r.provider}/${r.op}${level ? `-c${level}` : ""}`;
-      latest.set(key, { ...r, env: data.environment, generatedAt: data.generatedAt });
+      // size-sweep runs (seedRows recorded) keep one key per size; 100k is the default size
+      const sized = r.seedRows && r.seedRows !== 100_000;
+      const key = `${r.provider}/${r.op}${level ? `-c${level}` : ""}${sized ? `-r${r.seedRows}` : ""}`;
+      const entry = { ...r, env: data.environment, generatedAt: data.generatedAt };
+      latest.set(key, entry);
+      if (r.seedRows && !sized) latest.set(`${r.provider}/${r.op}-r${r.seedRows}`, entry);
       if (!history.has(key)) history.set(key, []);
       const entries = history.get(key);
       const existing = entries.find((e) => e.date === date);

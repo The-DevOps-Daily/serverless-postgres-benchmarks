@@ -334,6 +334,44 @@ export default function App() {
       })()}
 
       {(() => {
+        const SIZES = [100_000, 1_000_000, 5_000_000];
+        const sizeLabels = ["100k rows", "1M rows", "5M rows"];
+        const sweep = (provider, op) =>
+          SIZES.map((n) => data.latest.get(`${provider}/${op}-r${n}`)?.stats.medianMs);
+        const ops = [
+          { op: "branch", title: "Branch creation vs database size", note: "Neon branches carry the data; Supabase Pro branches copy schema only, which is why both lines are flat for different reasons." },
+          { op: "replica", title: "Read replica vs database size", note: "Provisioning dominates replica time at these sizes on both platforms; Supabase grows ~12% by 5M rows while Neon's storage-sharing replicas stay flat." },
+        ].map((o) => ({
+          ...o,
+          series: [
+            { name: "Neon", color: NEON_HEX, data: sweep("neon", o.op) },
+            { name: "Supabase", color: SUPA_HEX, data: sweep("supabase", o.op) },
+          ].filter((sr) => sr.data.every((v) => v != null)),
+        })).filter((o) => o.series.length);
+        if (!ops.length) return null;
+        return (
+          <Card
+            tag="same op, growing data · 50x size span"
+            runs="100k / 1M / 5M rows"
+            title="Does it scale with database size?"
+            sub="The same branch and replica operations, repeated as the seeded database grows 50x. Copy-on-write architectures should stay flat; physical clones should grow with data."
+          >
+            {ops.map((o) => (
+              <div key={o.op} style={{ marginBottom: 18 }}>
+                <h3 style={{ fontSize: 14, margin: "10px 0 2px" }}>{o.title}</h3>
+                <p className="card-sub" style={{ marginTop: 4 }}>{o.note}</p>
+                <CostChart stages={sizeLabels} series={o.series} fmt={(v) => fmtMs(v)} />
+              </div>
+            ))}
+            <Legend items={[
+              { color: NEON_HEX, label: "Neon" },
+              { color: SUPA_HEX, label: "Supabase" },
+            ]} />
+          </Card>
+        );
+      })()}
+
+      {(() => {
         const cm = costModelFrom(data.files ?? []);
         if (!cm) return null;
         const stages = cm.stages.map((st) => st.label);

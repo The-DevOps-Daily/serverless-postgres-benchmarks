@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-11T15:30:19.289Z",
+  "environment": {
+    "provider": "neon",
+    "region": "aws-eu-central-1",
+    "plan": "scale",
+    "clientLocation": "do-fra1-2vcpu",
+    "nodeVersion": "v22.22.3",
+    "harnessVersion": "0.1.0"
+  },
+  "results": [
+    {
+      "op": "replica",
+      "provider": "neon",
+      "runs": 5,
+      "failures": 0,
+      "samples": [
+        {
+          "durationMs": 8118.4,
+          "startedAt": "2026-06-11T15:28:59.643Z",
+          "phases": {
+            "replicaQueryableMs": 2827.507211000001
+          }
+        },
+        {
+          "durationMs": 7104.1,
+          "startedAt": "2026-06-11T15:29:17.766Z",
+          "phases": {
+            "replicaQueryableMs": 1819.2027039999994
+          }
+        },
+        {
+          "durationMs": 8082.2,
+          "startedAt": "2026-06-11T15:29:34.871Z",
+          "phases": {
+            "replicaQueryableMs": 2797.339454000001
+          }
+        },
+        {
+          "durationMs": 7840.8,
+          "startedAt": "2026-06-11T15:29:52.954Z",
+          "phases": {
+            "replicaQueryableMs": 2577.8379480000003
+          }
+        },
+        {
+          "durationMs": 7908.7,
+          "startedAt": "2026-06-11T15:30:10.795Z",
+          "phases": {
+            "replicaQueryableMs": 2638.412181000007
+          }
+        }
+      ],
+      "stats": {
+        "medianMs": 7908.7,
+        "p95Ms": 8118.4,
+        "minMs": 7104.1,
+        "maxMs": 8118.4,
+        "phases": {
+          "replicaQueryableMs": {
+            "medianMs": 2638.4,
+            "p95Ms": 2827.5,
+            "minMs": 1819.2,
+            "maxMs": 2827.5
+          }
+        }
+      },
+      "seedRows": 100000
+    }
+  ]
+}

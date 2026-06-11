@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-11T15:44:47.581Z",
+  "environment": {
+    "provider": "supabase",
+    "region": "eu-central-1",
+    "plan": "pro",
+    "clientLocation": "do-fra1-2vcpu",
+    "nodeVersion": "v22.22.3",
+    "harnessVersion": "0.1.0"
+  },
+  "results": [
+    {
+      "op": "replica",
+      "provider": "supabase",
+      "runs": 5,
+      "failures": 1,
+      "samples": [
+        {
+          "durationMs": 257.2,
+          "startedAt": "2026-06-11T15:32:07.949Z",
+          "error": "Supabase API POST /projects/qwkhejyjchpdeyudfifm/read-replicas/setup -> 406: {\"message\":\"Failed to check for latest completed physical backup\",\"errorEventId\":\"7ad0b07bec484930bab60f569caaa5c4\"}"
+        },
+        {
+          "durationMs": 180967,
+          "startedAt": "2026-06-11T15:32:18.213Z",
+          "phases": {
+            "replicaQueryableMs": 174909.39099100002
+          }
+        },
+        {
+          "durationMs": 181857.1,
+          "startedAt": "2026-06-11T15:35:29.182Z",
+          "phases": {
+            "replicaQueryableMs": 175744.031066
+          }
+        },
+        {
+          "durationMs": 173285.1,
+          "startedAt": "2026-06-11T15:38:41.039Z",
+          "phases": {
+            "replicaQueryableMs": 166873.546285
+          }
+        },
+        {
+          "durationMs": 181172.9,
+          "startedAt": "2026-06-11T15:41:44.326Z",
+          "phases": {
+            "replicaQueryableMs": 175226.728793
+          }
+        }
+      ],
+      "stats": {
+        "medianMs": 180967,
+        "p95Ms": 181857.1,
+        "minMs": 173285.1,
+        "maxMs": 181857.1,
+        "phases": {
+          "replicaQueryableMs": {
+            "medianMs": 174909.4,
+            "p95Ms": 175744,
+            "minMs": 166873.5,
+            "maxMs": 175744
+          }
+        }
+      },
+      "seedRows": 100000
+    }
+  ]
+}

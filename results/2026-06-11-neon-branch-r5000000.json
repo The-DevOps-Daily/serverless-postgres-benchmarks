@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-11T16:06:09.328Z",
+  "environment": {
+    "provider": "neon",
+    "region": "aws-eu-central-1",
+    "plan": "scale",
+    "clientLocation": "do-fra1-2vcpu",
+    "nodeVersion": "v22.22.3",
+    "harnessVersion": "0.1.0"
+  },
+  "results": [
+    {
+      "op": "branch",
+      "provider": "neon",
+      "runs": 8,
+      "failures": 0,
+      "samples": [
+        {
+          "durationMs": 1899.3,
+          "startedAt": "2026-06-11T16:05:33.667Z",
+          "phases": {
+            "branchQueryableMs": 1626.2586970000011
+          }
+        },
+        {
+          "durationMs": 1744.7,
+          "startedAt": "2026-06-11T16:05:38.567Z",
+          "phases": {
+            "branchQueryableMs": 1463.3764520000004
+          }
+        },
+        {
+          "durationMs": 1647.9,
+          "startedAt": "2026-06-11T16:05:43.312Z",
+          "phases": {
+            "branchQueryableMs": 1369.9819029999999
+          }
+        },
+        {
+          "durationMs": 2127.6,
+          "startedAt": "2026-06-11T16:05:47.961Z",
+          "phases": {
+            "branchQueryableMs": 1865.5622690000018
+          }
+        },
+        {
+          "durationMs": 1682.5,
+          "startedAt": "2026-06-11T16:05:53.089Z",
+          "phases": {
+            "branchQueryableMs": 1401.871751999999
+          }
+        },
+        {
+          "durationMs": 1674,
+          "startedAt": "2026-06-11T16:05:57.772Z",
+          "phases": {
+            "branchQueryableMs": 1395.8962669999964
+          }
+        },
+        {
+          "durationMs": 1669,
+          "startedAt": "2026-06-11T16:06:02.446Z",
+          "phases": {
+            "branchQueryableMs": 1387.088373999999
+          }
+        },
+        {
+          "durationMs": 1623.7,
+          "startedAt": "2026-06-11T16:06:07.115Z",
+          "phases": {
+            "branchQueryableMs": 1353.982032
+          }
+        }
+      ],
+      "stats": {
+        "medianMs": 1674,
+        "p95Ms": 2127.6,
+        "minMs": 1623.7,
+        "maxMs": 2127.6,
+        "phases": {
+          "branchQueryableMs": {
+            "medianMs": 1395.9,
+            "p95Ms": 1865.6,
+            "minMs": 1354,
+            "maxMs": 1865.6
+          }
+        }
+      },
+      "seedRows": 5000000
+    }
+  ]
+}

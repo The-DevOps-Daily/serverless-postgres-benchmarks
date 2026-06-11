@@ -1,0 +1,72 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-11T16:34:04.425Z",
+  "environment": {
+    "provider": "supabase",
+    "region": "eu-central-1",
+    "plan": "pro",
+    "clientLocation": "do-fra1-2vcpu",
+    "nodeVersion": "v22.22.3",
+    "harnessVersion": "0.1.0"
+  },
+  "results": [
+    {
+      "op": "replica",
+      "provider": "supabase",
+      "runs": 5,
+      "failures": 0,
+      "samples": [
+        {
+          "durationMs": 233732.7,
+          "startedAt": "2026-06-11T16:15:27.493Z",
+          "phases": {
+            "replicaQueryableMs": 226426.850283
+          }
+        },
+        {
+          "durationMs": 233279.6,
+          "startedAt": "2026-06-11T16:19:31.229Z",
+          "phases": {
+            "replicaQueryableMs": 227244.14211099996
+          }
+        },
+        {
+          "durationMs": 201649.9,
+          "startedAt": "2026-06-11T16:23:34.510Z",
+          "phases": {
+            "replicaQueryableMs": 195508.254129
+          }
+        },
+        {
+          "durationMs": 202707,
+          "startedAt": "2026-06-11T16:27:06.161Z",
+          "phases": {
+            "replicaQueryableMs": 196686.62679600006
+          }
+        },
+        {
+          "durationMs": 201577.3,
+          "startedAt": "2026-06-11T16:30:38.870Z",
+          "phases": {
+            "replicaQueryableMs": 195614.08297599992
+          }
+        }
+      ],
+      "stats": {
+        "medianMs": 202707,
+        "p95Ms": 233732.7,
+        "minMs": 201577.3,
+        "maxMs": 233732.7,
+        "phases": {
+          "replicaQueryableMs": {
+            "medianMs": 196686.6,
+            "p95Ms": 227244.1,
+            "minMs": 195508.3,
+            "maxMs": 227244.1
+          }
+        }
+      },
+      "seedRows": 5000000
+    }
+  ]
+}

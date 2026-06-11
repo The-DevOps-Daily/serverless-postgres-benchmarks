@@ -54,3 +54,8 @@ These benchmarks are open source on purpose: if something in the methodology loo
 ## Results
 
 See `results/` for raw data. Published write-ups based on this harness are listed in [RESULTS.md](results/README.md) as they land.
+
+## Coming soon
+
+- **Supabase Team tier benchmarks**: the Team plan runs ~$600/month, so it is queued behind reader interest. If you want it, say so in an issue.
+- **AI agent build benchmark**: how many tokens it takes an agent to build the same app on each platform, with a fixed spec, public rubric, and the generated apps committed for inspection.
