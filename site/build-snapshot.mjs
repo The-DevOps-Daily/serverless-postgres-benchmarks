@@ -43,8 +43,10 @@ html = html.replace(/<link rel="stylesheet" href="\.\/fonts\.css"[^>]*>/, () => 
   return `<style>${fontsCss}</style>`;
 });
 
-// Embed the data ahead of the bundle
-html = html.replace("<script type=\"module\">", `<script>window.__BENCH_DATA__ = ${JSON.stringify(files)}</script>\n<script type="module">`);
+// Embed the data ahead of the bundle (prerender.mjs may have done it already)
+if (!html.includes("__BENCH_DATA__")) {
+  html = html.replace("<script type=\"module\">", `<script>window.__BENCH_DATA__ = ${JSON.stringify(files)}</script>\n<script type="module">`);
+}
 
 // Freeze entrance animations so screenshots capture the final state
 html = html.replace("</head>", `<style>.bar-grow,.dot-in,.fade-in{animation:none !important}</style></head>`);

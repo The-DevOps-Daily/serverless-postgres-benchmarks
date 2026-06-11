@@ -76,6 +76,7 @@ export default function App() {
   const totalSamples = [...data.latest.values()].reduce((n, r) => n + r.samples.length, 0);
   const runDates = [...new Set([...data.history.values()].flatMap((e) => e.map((p) => p.date)))].sort();
   const anyResult = [...data.latest.values()][0];
+  const plans = [...new Set([...data.latest.values()].map((r) => r.env.plan).filter(Boolean))].join(" / ");
 
   const latencyRows = [
     { label: "Neon · pooler", r: get("neon", "pooled-query-latency"), color: COLORS.neon },
@@ -112,7 +113,7 @@ export default function App() {
         <div className="meta">
           <span>region <b>aws eu-central-1</b></span>
           <span>client <b>{anyResult.env.clientLocation}</b></span>
-          <span>plans <b>free / free</b></span>
+          <span>plans <b>{plans}</b></span>
           <span>samples <b>{totalSamples}</b></span>
           <span>sessions <b>{runDates.length}</b></span>
           <span>updated <b>{anyResult.generatedAt.slice(0, 10)}</b></span>
@@ -127,8 +128,8 @@ export default function App() {
 
       <section className="stats">
         <Stat k="query latency" v={`~${Math.round((nq.stats.medianMs + sq.stats.medianMs) / 2)}`} unit="ms" d="median, both platforms. A tie." />
-        <Stat k="create: neon" v={(nc.stats.medianMs / 1000).toFixed(1)} unit="s" d={`to first query, p95 ${(nc.stats.p95Ms / 1000).toFixed(1)}s`} />
-        <Stat k="create: supabase" v={(sc.stats.medianMs / 1000).toFixed(1)} unit="s" d={`to first query, p95 ${(sc.stats.p95Ms / 1000).toFixed(1)}s`} />
+        <Stat k="create: neon" v={(nc.stats.medianMs / 1000).toFixed(1)} unit="s" d={`to first query on ${nc.env.plan}, p95 ${(nc.stats.p95Ms / 1000).toFixed(1)}s`} />
+        <Stat k="create: supabase" v={(sc.stats.medianMs / 1000).toFixed(1)} unit="s" d={`to first query on ${sc.env.plan}, p95 ${(sc.stats.p95Ms / 1000).toFixed(1)}s`} />
         <Stat k="neon cold start" v={Math.round(cold.stats.phases.wakeQueryMs.medianMs)} unit="ms" d={`wake query, p95 ${(cold.stats.phases.wakeQueryMs.p95Ms / 1000).toFixed(2)}s`} />
         <Stat k="neon branch" v={(branch.stats.medianMs / 1000).toFixed(1)} unit="s" d="writable copy of 100k rows" />
       </section>

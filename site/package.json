@@ -7,7 +7,7 @@
     "predev": "node copy-results.mjs",
     "dev": "vite",
     "prebuild": "node copy-results.mjs",
-    "build": "vite build",
+    "build": "vite build && node prerender.mjs",
     "preview": "vite preview",
     "snapshot": "node build-snapshot.mjs"
   },
