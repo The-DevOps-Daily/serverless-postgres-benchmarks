@@ -17,7 +17,7 @@ function build(files) {
       else entries.push(point);
     }
   }
-  return { latest, history };
+  return { latest, history, files };
 }
 
 /** Synchronous when snapshot.html has embedded the data (file:// previews). */
@@ -32,6 +32,14 @@ export async function loadResults() {
     manifest.files.map(async (f) => ({ file: f, data: await (await fetch(`results/${f}`)).json() })),
   );
   return build(files);
+}
+
+/** The newest cost-model file, when present in the manifest. */
+export function costModelFrom(files) {
+  const models = files
+    .filter(({ data }) => data.kind === "cost-model")
+    .sort((a, b) => a.file.localeCompare(b.file));
+  return models.length ? models[models.length - 1].data : null;
 }
 
 export function fmtMs(ms) {

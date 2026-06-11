@@ -432,3 +432,61 @@ export function CdfChart({ series, width = 980, dimmed = new Set() }) {
     </ChartShell>
   );
 }
+
+/* ------------------------------------------------------------------ */
+/* Cost curves: ordered stage labels on x, dollars on y                */
+/* series: {name, color, data: number[]}; stages: string[]             */
+/* ------------------------------------------------------------------ */
+
+export function CostChart({ stages, series, width = 980 }) {
+  const tooltip = useTooltip();
+  const height = 300;
+  const padL = 62, padR = 18, padT = 14, padB = 34;
+  const all = series.flatMap((s) => s.data);
+  const maxV = Math.max(...all) * 1.08;
+  const x = (i) => padL + (i / Math.max(1, stages.length - 1)) * (width - padL - padR);
+  const y = (v) => padT + (1 - v / maxV) * (height - padT - padB);
+  const yTicks = [...Array(4).keys()].map((t) => (maxV * (t + 1)) / 4);
+  const fmtUsd = (v) => `$${v >= 100 ? Math.round(v).toLocaleString() : v.toFixed(0)}`;
+
+  return (
+    <ChartShell tooltip={tooltip}>
+      <svg viewBox={`0 0 ${width} ${height}`} width="100%">
+        {yTicks.map((v) => (
+          <g key={v}>
+            <line x1={padL} y1={y(v)} x2={width - padR} y2={y(v)} stroke="rgba(255,255,255,0.05)" />
+            <text x={padL - 8} y={y(v) + 4} fontSize={11} textAnchor="end" fill="var(--text-faint)">
+              {fmtUsd(v)}
+            </text>
+          </g>
+        ))}
+        {stages.map((label, i) => (
+          <text
+            key={label} x={x(i)} y={height - 10} fontSize={10.5}
+            textAnchor={i === 0 ? "start" : i === stages.length - 1 ? "end" : "middle"}
+            fill="var(--text-faint)"
+          >
+            {label}
+          </text>
+        ))}
+        {series.map((s) => {
+          const d = s.data.map((v, i) => `${i === 0 ? "M" : "L"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+          return (
+            <g key={s.name}>
+              <path d={d} fill="none" stroke={s.color} strokeWidth={2.5} strokeLinejoin="round" />
+              {s.data.map((v, i) => (
+                <g key={i}
+                  onMouseMove={(e) => tooltip.show(e, [s.name, `$${v.toLocaleString()}/mo`, stages[i]])}
+                  onMouseLeave={tooltip.hide}
+                >
+                  <circle cx={x(i)} cy={y(v)} r={11} fill="transparent" />
+                  <circle cx={x(i)} cy={y(v)} r={4.5} fill={s.color} />
+                </g>
+              ))}
+            </g>
+          );
+        })}
+      </svg>
+    </ChartShell>
+  );
+}

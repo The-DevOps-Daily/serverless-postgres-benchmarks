@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { embeddedResults, loadResults, samplePoints, fmtMs } from "./data.js";
-import { BarChart, StripPlot, HistoryChart, CdfChart, Legend } from "./charts.jsx";
+import { costModelFrom, embeddedResults, loadResults, samplePoints, fmtMs } from "./data.js";
+import { BarChart, StripPlot, HistoryChart, CdfChart, CostChart, Legend } from "./charts.jsx";
 
 const COLORS = { neon: "var(--neon)", supabase: "var(--supabase)" };
 const NEON_HEX = "#34d399";
@@ -332,6 +332,44 @@ export default function App() {
           </>
         );
       })()}
+
+      {(() => {
+        const cm = costModelFrom(data.files ?? []);
+        if (!cm) return null;
+        const stages = cm.stages.map((st) => st.label);
+        return (
+          <Card
+            tag="list prices, verified june 2026 · open source model"
+            runs={`${stages.length} growth stages`}
+            title="What the same app costs as it grows"
+            sub="One application priced through five growth stages on both platforms. Three regimes: scale-to-zero wins the quiet months, the flat fee wins the middle, and metered auth decides the end game. Assumptions are parameters; rerun the model with your own."
+          >
+            <CostChart stages={stages} series={[
+              { name: "Neon (Launch)", color: NEON_HEX, data: cm.stages.map((st) => st.neonLaunch.totalUsd) },
+              { name: "Supabase (Pro)", color: SUPA_HEX, data: cm.stages.map((st) => st.supabasePro.totalUsd) },
+            ]} />
+            <Legend items={[
+              { color: NEON_HEX, label: "Neon (Launch)" },
+              { color: SUPA_HEX, label: "Supabase (Pro)" },
+            ]} />
+          </Card>
+        );
+      })()}
+
+      <section className="method">
+        <div className="method-col">
+          <h3>Findings you only get by running it</h3>
+          <p>Supabase free-plan direct hosts are IPv6-only (IPv4 goes through Supavisor), the pooler cluster varies per project, and database TLS chains to Supabase's own CA.</p>
+        </div>
+        <div className="method-col">
+          <h3>Resize is not one operation</h3>
+          <p>Supabase compute changes restart the database (~39s of measured SQL outage) and are throttled for minutes between changes. Neon resizes applied with zero failed probes across forty cycles.</p>
+        </div>
+        <div className="method-col">
+          <h3>Data branches have prerequisites</h3>
+          <p>Supabase's with_data branch flag returned 406 "Failed to fetch latest physical backup" on every fresh-project attempt: data-included branches need pre-existing physical backups.</p>
+        </div>
+      </section>
 
       <Card
         tag="median over time"

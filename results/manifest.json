@@ -24,6 +24,7 @@
     "2026-06-10-supabase-query-latency.json",
     "2026-06-10-supabase-replica.json",
     "2026-06-10-supabase-resize.json",
+    "2026-06-11-cost-model.json",
     "2026-06-11-neon-branch.json",
     "2026-06-11-neon-cold-start.json",
     "2026-06-11-neon-concurrency-c100.json",
