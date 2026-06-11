@@ -11,4 +11,6 @@ Every file records full environment metadata (region, plan, client location, nod
 
 ## Published write-ups
 
-None yet.
+- [Neon vs Supabase free tier benchmarks](https://devops-daily.com/posts/neon-vs-supabase-free-tier-benchmarks) - latency, project creation, cold starts, branching, networking fine print
+- [Operational benchmarks](https://devops-daily.com/posts/neon-vs-supabase-operational-benchmarks) - resize downtime, branching, replicas, restore, connection stampedes, size sweep
+- [Scaling costs](https://devops-daily.com/posts/neon-vs-supabase-scaling-costs) - one app priced through five growth stages, open source cost model
