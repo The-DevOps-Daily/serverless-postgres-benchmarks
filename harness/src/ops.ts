@@ -194,13 +194,13 @@ export async function resizeOp(provider: Provider, runs: number): Promise<OpResu
 /**
  * replica: time creating a read replica until it answers SQL, then remove it.
  */
-export async function replicaOp(provider: Provider, runs: number): Promise<OpResult> {
+export async function replicaOp(provider: Provider, runs: number, seedRows = 10_000): Promise<OpResult> {
   if (!provider.createReadReplica || !provider.deleteReadReplica) {
     throw new Error(`${provider.name} read replicas are not implemented`);
   }
   // Supabase gates read replicas behind Small compute or larger
   const project = await provider.createProject(uniqueName("repl", 0), { computeSize: "small" });
-  await seed(project.connectionString, 10_000);
+  await seed(project.connectionString, seedRows);
   try {
     return await timeOp({ op: "replica", provider: provider.name, runs, pauseMs: 10_000 }, async () => {
       const t0 = performance.now();
@@ -289,10 +289,14 @@ async function seed(connectionString: string, rows: number): Promise<void> {
   await client.connect();
   try {
     await client.query(`create table if not exists bench_seed (id bigserial primary key, payload text)`);
-    await client.query(
-      `insert into bench_seed (payload) select md5(g::text) from generate_series(1, $1) g`,
-      [rows],
-    );
+    // large seeds in chunks so no single statement runs long enough to time out
+    const chunk = 500_000;
+    for (let from = 1; from <= rows; from += chunk) {
+      await client.query(
+        `insert into bench_seed (payload) select md5(g::text) from generate_series($1::bigint, $2::bigint) g`,
+        [from, Math.min(from + chunk - 1, rows)],
+      );
+    }
     await firstSuccessfulQuery(connectionString);
   } finally {
     await client.end();

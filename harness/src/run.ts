@@ -110,7 +110,7 @@ async function main() {
       result = await resizeOp(provider, args.runs);
       break;
     case "replica":
-      result = await replicaOp(provider, args.runs);
+      result = await replicaOp(provider, args.runs, args.seedRows);
       break;
     case "restore":
       result = await restoreOp(provider, args.runs, args.seedRows);
@@ -137,6 +137,9 @@ async function main() {
   const stamp = file.generatedAt.slice(0, 10);
   // concurrency runs at several client levels per day; keep them apart
   const opSlug = args.op === "concurrency" ? `concurrency-c${args.clients}` : args.op;
+  if (["branch", "branch-with-data", "replica", "restore"].includes(args.op)) {
+    (result as OpResult & { seedRows?: number }).seedRows = args.seedRows;
+  }
   const outPath =
     args.out ?? join("..", "results", `${stamp}-${args.provider}-${opSlug}.json`);
   mkdirSync(join("..", "results"), { recursive: true });
