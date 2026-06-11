@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-06-11T04:42:47.552Z",
+  "generatedAt": "2026-06-11T05:46:27.082Z",
   "kind": "cost-model",
   "note": "List prices June 2026; see src/cost/prices.ts for sources and VERIFY flags.",
   "stages": [
@@ -279,7 +279,7 @@
         ]
       },
       "supabasePro": {
-        "totalUsd": 132.9,
+        "totalUsd": 127.94,
         "lines": [
           {
             "item": "Pro base (per org)",
@@ -287,7 +287,7 @@
           },
           {
             "item": "compute (small, 24/7, after $10 credits)",
-            "usd": 10
+            "usd": 5.04
           },
           {
             "item": "storage beyond 8 GB included",
@@ -355,7 +355,7 @@
         ]
       },
       "supabasePro": {
-        "totalUsd": 1193.38,
+        "totalUsd": 1213.39,
         "lines": [
           {
             "item": "Pro base (per org)",
@@ -363,7 +363,7 @@
           },
           {
             "item": "compute (medium, 24/7, after $10 credits)",
-            "usd": 30
+            "usd": 50.01
           },
           {
             "item": "storage beyond 8 GB included",

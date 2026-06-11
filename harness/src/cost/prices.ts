@@ -22,7 +22,7 @@ export const NEON_PRICES = {
   },
   // Branches share storage copy-on-write; only diverged pages bill.
   // A branch's compute bills only while its endpoint is active.
-  extraBranchPerMonthUsd: 1.5, // beyond 10 per project (VERIFY exact rate)
+  extraBranchPerMonthUsd: 1.5, // prorated hourly; beyond 10 included on Launch, 25 on Scale (verified 2026-06-11)
   restoreHistoryPerGbMonthUsd: 0.2,
 } as const;
 
@@ -32,18 +32,19 @@ export const SUPABASE_PRICES = {
     baseMonthlyUsd: 25, // per organization
     includedComputeCreditsUsd: 10,
     includedDbStorageGb: 8,
-    extraDbStoragePerGbMonthUsd: 0.125, // VERIFY current rate
+    extraDbStoragePerGbMonthUsd: 0.125, // verified 2026-06-11
     includedMau: 100_000,
     extraMauUsd: 0.00325,
     includedEgressGb: 250,
-    extraEgressPerGbUsd: 0.09, // VERIFY current rate
+    extraEgressPerGbUsd: 0.09, // verified 2026-06-11
   },
   compute: {
     // hourly, billed while the project exists (no scale-to-zero)
-    micro: 0.01344,
-    small: 0.0274, // VERIFY against pricing page
-    medium: 0.0548, // VERIFY
-    large: 0.1096, // VERIFY
+    // verified 2026-06-11 against supabase.com/docs/guides/platform/compute-and-disk
+    micro: 0.01344, // ~$10/mo
+    small: 0.0206, // ~$15/mo
+    medium: 0.0822, // ~$60/mo
+    large: 0.1517, // ~$110/mo
   },
   branchComputePerHourUsd: 0.01344, // micro-equivalent, no compute credits apply
   pitrAddonPerMonthUsd: 100, // per 7-day window
