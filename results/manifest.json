@@ -57,6 +57,8 @@
     "2026-06-11-supabase-replica-r1000000.json",
     "2026-06-11-supabase-replica-r5000000.json",
     "2026-06-11-supabase-replica.json",
-    "2026-06-11-supabase-resize.json"
+    "2026-06-11-supabase-resize.json",
+    "2026-06-12-neon-create-project.json",
+    "2026-06-12-supabase-create-project.json"
   ]
 }

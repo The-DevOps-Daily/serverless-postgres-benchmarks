@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-06-12T07:37:50.344Z",
+  "environment": {
+    "provider": "supabase",
+    "region": "eu-central-1",
+    "plan": "pro",
+    "clientLocation": "do-fra1-2vcpu",
+    "nodeVersion": "v22.22.3",
+    "harnessVersion": "0.1.0"
+  },
+  "results": [
+    {
+      "op": "create-project",
+      "provider": "supabase",
+      "runs": 10,
+      "failures": 2,
+      "samples": [
+        {
+          "durationMs": 137742.3,
+          "startedAt": "2026-06-12T07:18:53.705Z",
+          "phases": {
+            "readyAndQueryableMs": 134603.31559299998
+          }
+        },
+        {
+          "durationMs": 110311,
+          "startedAt": "2026-06-12T07:21:16.450Z",
+          "phases": {
+            "readyAndQueryableMs": 107162.47750499999
+          }
+        },
+        {
+          "durationMs": 105831.6,
+          "startedAt": "2026-06-12T07:23:11.762Z",
+          "error": "Supabase qlbnsqonztippdbzhnro: no pooler config returned"
+        },
+        {
+          "durationMs": 15993,
+          "startedAt": "2026-06-12T07:25:02.595Z",
+          "error": "Supabase API GET /projects/mqyhisdeupmuwkckfpxl -> 404: {\"message\":\"Not Found\"}"
+        },
+        {
+          "durationMs": 110948,
+          "startedAt": "2026-06-12T07:25:23.589Z",
+          "phases": {
+            "readyAndQueryableMs": 108577.20856599999
+          }
+        },
+        {
+          "durationMs": 108456,
+          "startedAt": "2026-06-12T07:27:19.538Z",
+          "phases": {
+            "readyAndQueryableMs": 106268.26876600005
+          }
+        },
+        {
+          "durationMs": 134184.5,
+          "startedAt": "2026-06-12T07:29:12.995Z",
+          "phases": {
+            "readyAndQueryableMs": 131504.84886199993
+          }
+        },
+        {
+          "durationMs": 142376.9,
+          "startedAt": "2026-06-12T07:31:32.181Z",
+          "phases": {
+            "readyAndQueryableMs": 139689.035532
+          }
+        },
+        {
+          "durationMs": 111943,
+          "startedAt": "2026-06-12T07:33:59.559Z",
+          "phases": {
+            "readyAndQueryableMs": 109508.90085999994
+          }
+        },
+        {
+          "durationMs": 113841,
+          "startedAt": "2026-06-12T07:35:56.503Z",
+          "phases": {
+            "readyAndQueryableMs": 110714.42034099996
+          }
+        }
+      ],
+      "stats": {
+        "medianMs": 111943,
+        "p95Ms": 142376.9,
+        "minMs": 108456,
+        "maxMs": 142376.9,
+        "phases": {
+          "readyAndQueryableMs": {
+            "medianMs": 109508.9,
+            "p95Ms": 139689,
+            "minMs": 106268.3,
+            "maxMs": 139689
+          }
+        }
+      }
+    }
+  ]
+}
