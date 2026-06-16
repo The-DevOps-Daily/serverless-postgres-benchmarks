@@ -124,6 +124,16 @@ export default function App() {
           <span className="chip"><i style={{ background: NEON_HEX }} />cold start: {fmtMs(cold.stats.phases.wakeQueryMs.medianMs)} wake</span>
           <span className="chip"><i style={{ background: NEON_HEX }} />branching: neon only on free</span>
         </div>
+        <p className="reads" style={{ marginTop: 16, fontSize: 14, color: "var(--text-faint)" }}>
+          Read the write-ups:{" "}
+          <a href="https://devops-daily.com/posts/neon-vs-supabase-free-tier-benchmarks">free tiers</a>
+          {" · "}
+          <a href="https://devops-daily.com/posts/neon-vs-supabase-operational-benchmarks">operational benchmarks</a>
+          {" · "}
+          <a href="https://devops-daily.com/posts/neon-vs-supabase-scaling-costs">scaling costs</a>
+          {" · "}
+          <a href="https://devops-daily.com/comparisons/neon-vs-supabase">full comparison</a>
+        </p>
       </header>
 
       <section className="stats">
@@ -450,9 +460,17 @@ export default function App() {
 
       <footer className="foot">
         <p>
-          Free plans on both platforms. Resources are created fresh for every run and torn
-          down afterwards. Harness, raw data, and methodology:{" "}
+          Resources are created fresh for every run and torn down afterwards. Harness, raw data,
+          and methodology:{" "}
           <a href={REPO}>The-DevOps-Daily/serverless-postgres-benchmarks</a>.
+        </p>
+        <p style={{ marginTop: 8 }}>
+          Full write-ups:{" "}
+          <a href="https://devops-daily.com/posts/neon-vs-supabase-free-tier-benchmarks">free tiers</a>
+          {" · "}
+          <a href="https://devops-daily.com/posts/neon-vs-supabase-operational-benchmarks">operational benchmarks</a>
+          {" · "}
+          <a href="https://devops-daily.com/posts/neon-vs-supabase-scaling-costs">scaling costs</a>
         </p>
       </footer>
     </main>
