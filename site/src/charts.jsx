@@ -347,7 +347,17 @@ export function Legend({ items, onToggle, dimmed = new Set() }) {
             tabIndex={toggleable ? 0 : undefined}
             onKeyDown={toggleable ? (e) => (e.key === "Enter" || e.key === " ") && onToggle(i.label) : undefined}
           >
-            <span className="sw" style={{ background: i.color }} />
+            {i.line ? (
+              <svg className="sw-line" width="22" height="8" aria-hidden="true">
+                <line
+                  x1="1" y1="4" x2="21" y2="4"
+                  stroke={i.color} strokeWidth="2.2"
+                  strokeDasharray={i.dash || undefined} strokeLinecap="round"
+                />
+              </svg>
+            ) : (
+              <span className="sw" style={{ background: i.color }} />
+            )}
             {i.label}
           </span>
         );
@@ -403,7 +413,7 @@ export function CdfChart({ series, width = 980, dimmed = new Set() }) {
         ))}
         {series.map((s) => {
           const sorted = [...s.samples].sort((a, b) => a - b);
-          const dim = dimmed.has(s.provider ?? s.name);
+          const dim = dimmed.has(s.name) || (s.provider != null && dimmed.has(s.provider));
           const d = sorted
             .map((v, i) => {
               const pct = (i / (sorted.length - 1)) * 100;
@@ -438,16 +448,30 @@ export function CdfChart({ series, width = 980, dimmed = new Set() }) {
 /* series: {name, color, data: number[]}; stages: string[]             */
 /* ------------------------------------------------------------------ */
 
-export function CostChart({ stages, series, width = 980, fmt }) {
+export function CostChart({ stages, series, width = 980, fmt, log = false }) {
   const tooltip = useTooltip();
   const height = 300;
-  const padL = 62, padR = 18, padT = 14, padB = 34;
+  const padL = 62, padR = 18, padT = 18, padB = 34;
   const all = series.flatMap((s) => s.data);
-  const maxV = Math.max(...all) * 1.08;
-  const x = (i) => padL + (i / Math.max(1, stages.length - 1)) * (width - padL - padR);
-  const y = (v) => padT + (1 - v / maxV) * (height - padT - padB);
-  const yTicks = [...Array(4).keys()].map((t) => (maxV * (t + 1)) / 4);
   const fmtV = fmt ?? ((v) => `$${v >= 100 ? Math.round(v).toLocaleString() : v.toFixed(0)}`);
+  const x = (i) => padL + (i / Math.max(1, stages.length - 1)) * (width - padL - padR);
+
+  // Log scale spreads out the low end so a $5-vs-$26 gap is visible next to a
+  // $1,200 spike; linear keeps the spike honest. Callers choose.
+  let y, yTicks;
+  if (log) {
+    const lo = Math.max(1, Math.min(...all.filter((v) => v > 0)));
+    const loB = 10 ** Math.floor(Math.log10(lo));
+    const hiB = 10 ** Math.ceil(Math.log10(Math.max(...all)));
+    const l = (v) => Math.log10(Math.max(v, loB));
+    y = (v) => padT + (1 - (l(v) - l(loB)) / (l(hiB) - l(loB))) * (height - padT - padB);
+    yTicks = [];
+    for (let t = loB; t <= hiB + 1e-6; t *= 10) yTicks.push(t);
+  } else {
+    const maxV = Math.max(...all) * 1.08;
+    y = (v) => padT + (1 - v / maxV) * (height - padT - padB);
+    yTicks = [...Array(4).keys()].map((t) => (maxV * (t + 1)) / 4);
+  }
 
   return (
     <ChartShell tooltip={tooltip}>
@@ -471,6 +495,7 @@ export function CostChart({ stages, series, width = 980, fmt }) {
         ))}
         {series.map((s) => {
           const d = s.data.map((v, i) => `${i === 0 ? "M" : "L"}${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+          const last = s.data.length - 1;
           return (
             <g key={s.name}>
               <path d={d} fill="none" stroke={s.color} strokeWidth={2.5} strokeLinejoin="round" />
@@ -481,8 +506,95 @@ export function CostChart({ stages, series, width = 980, fmt }) {
                 >
                   <circle cx={x(i)} cy={y(v)} r={11} fill="transparent" />
                   <circle cx={x(i)} cy={y(v)} r={4.5} fill={s.color} />
+                  {/* Endpoint value labels so the start and end costs read without hovering. */}
+                  {(i === 0 || i === last) && (
+                    <text
+                      x={i === 0 ? x(i) + 9 : x(i) - 9}
+                      y={y(v) - 9}
+                      fontSize={11}
+                      fontWeight={600}
+                      textAnchor={i === 0 ? "start" : "end"}
+                      fill={s.color}
+                      style={{ fontVariantNumeric: "tabular-nums" }}
+                    >
+                      {fmtV(v)}
+                    </text>
+                  )}
                 </g>
               ))}
+            </g>
+          );
+        })}
+      </svg>
+    </ChartShell>
+  );
+}
+
+/* --------------------------------------------------------------------- */
+/* Grouped vertical bars: one bar per series within each stage group.    */
+/* Drop-in for CostChart's props (stages, series[{name,color,data}]), for */
+/* small discrete x-axes where bars read better than a near-flat line.    */
+/* --------------------------------------------------------------------- */
+export function GroupedBarChart({ stages, series, width = 980, fmt }) {
+  const tooltip = useTooltip();
+  const height = 300;
+  const padL = 62, padR = 18, padT = 20, padB = 34;
+  const plotW = width - padL - padR;
+  const plotH = height - padT - padB;
+  const all = series.flatMap((s) => s.data);
+  const maxV = Math.max(...all) * 1.14;
+  const fmtV = fmt ?? ((v) => `$${Math.round(v)}`);
+  const y = (v) => padT + (1 - v / maxV) * plotH;
+  const yTicks = [...Array(4).keys()].map((t) => (maxV * (t + 1)) / 4);
+
+  const groupW = plotW / stages.length;
+  const groupPad = groupW * 0.2;
+  const barGap = 8;
+  const innerW = groupW - groupPad * 2;
+  const barW = (innerW - barGap * (series.length - 1)) / series.length;
+
+  return (
+    <ChartShell tooltip={tooltip}>
+      <svg viewBox={`0 0 ${width} ${height}`} width="100%">
+        {yTicks.map((v) => (
+          <g key={v}>
+            <line x1={padL} y1={y(v)} x2={width - padR} y2={y(v)} stroke="rgba(255,255,255,0.05)" />
+            <text x={padL - 8} y={y(v) + 4} fontSize={11} textAnchor="end" fill="var(--text-faint)">
+              {fmtV(v)}
+            </text>
+          </g>
+        ))}
+        {stages.map((label, i) => {
+          const gx = padL + groupW * i + groupPad;
+          return (
+            <g key={label}>
+              {series.map((s, si) => {
+                const v = s.data[i];
+                const bx = gx + si * (barW + barGap);
+                const by = y(v);
+                const bh = padT + plotH - by;
+                return (
+                  <g
+                    key={s.name}
+                    onMouseMove={(e) => tooltip.show(e, [s.name, fmtV(v), label])}
+                    onMouseLeave={tooltip.hide}
+                  >
+                    <rect x={bx} y={by} width={barW} height={Math.max(1, bh)} rx={4} fill={s.color} />
+                    <text
+                      x={bx + barW / 2} y={by - 6} fontSize={10.5} textAnchor="middle"
+                      fill="var(--text-dim)" style={{ fontVariantNumeric: "tabular-nums" }}
+                    >
+                      {fmtV(v)}
+                    </text>
+                  </g>
+                );
+              })}
+              <text
+                x={padL + groupW * i + groupW / 2} y={height - 10}
+                fontSize={10.5} textAnchor="middle" fill="var(--text-faint)"
+              >
+                {label}
+              </text>
             </g>
           );
         })}

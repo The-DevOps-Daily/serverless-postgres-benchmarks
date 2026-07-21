@@ -1,11 +1,47 @@
 import { useEffect, useRef, useState } from "react";
 import { costModelFrom, embeddedResults, loadResults, samplePoints, fmtMs } from "./data.js";
-import { BarChart, StripPlot, HistoryChart, CdfChart, CostChart, Legend } from "./charts.jsx";
+import { BarChart, StripPlot, HistoryChart, CdfChart, CostChart, GroupedBarChart, Legend } from "./charts.jsx";
 
 const COLORS = { neon: "var(--neon)", supabase: "var(--supabase)" };
 const NEON_HEX = "#34d399";
 const SUPA_HEX = "#38bdf8";
 const REPO = "https://github.com/The-DevOps-Daily/serverless-postgres-benchmarks";
+
+/** Row count of the parent database every branch is taken from. A Neon branch
+ *  carries all of them; a Supabase branch carries none (schema only). */
+const PARENT_ROWS = 100_000;
+
+/** What a fresh branch actually contains. The strip plot only shows time, which
+ *  makes Supabase's slower-but-not-huge number look fine until you see the
+ *  branch is empty. This pairs each time with the rows it carried. */
+function BranchPayload({ neon, supabase }) {
+  const fmtRows = (n) => (n === 0 ? "0 rows" : n >= 1000 ? `${Math.round(n / 1000)}k rows` : `${n} rows`);
+  const row = (name, color, rows, ms, note) => (
+    <div className="payload-row">
+      <span className="payload-name" style={{ color }}>{name}</span>
+      <span className="payload-track">
+        <span
+          className="payload-fill"
+          style={{ width: `${(rows / PARENT_ROWS) * 100}%`, background: color }}
+        />
+      </span>
+      <span className="payload-val">
+        {fmtRows(rows)} <em>{note} · {(ms / 1000).toFixed(1)}s</em>
+      </span>
+    </div>
+  );
+  return (
+    <div className="payload">
+      <div className="payload-head">rows carried by a fresh branch</div>
+      {row("Neon", NEON_HEX, neon.rows, neon.ms, "full copy-on-write")}
+      {row("Supabase", SUPA_HEX, supabase.rows, supabase.ms, "schema only")}
+      <p className="payload-foot">
+        Supabase's branch answers sooner because it copies nothing. Neon's carries the
+        parent's full dataset, so its time is doing real work.
+      </p>
+    </div>
+  );
+}
 
 function Stat({ k, v, unit, d }) {
   return (
@@ -13,6 +49,53 @@ function Stat({ k, v, unit, d }) {
       <div className="k">{k}</div>
       <div className="v">{v}<small>{unit}</small></div>
       <div className="d">{d}</div>
+    </div>
+  );
+}
+
+/** Side-by-side create comparison. Leads with the multiple and draws each
+ *  median as a bar scaled to the slower one, so the gap reads instantly
+ *  instead of making the reader divide two equal-looking cards. */
+function CreateVersus({ neon, supabase }) {
+  const nMed = neon.stats.medianMs;
+  const sMed = supabase.stats.medianMs;
+  const maxMed = Math.max(nMed, sMed);
+  const neonFaster = nMed <= sMed;
+  const mult = neonFaster ? sMed / nMed : nMed / sMed;
+  const multStr = mult >= 10 ? Math.round(mult) : mult.toFixed(1);
+  const winner = neonFaster ? "Neon" : "Supabase";
+  const winnerColor = neonFaster ? NEON_HEX : SUPA_HEX;
+
+  const row = (name, color, plan, medMs, p95Ms) => (
+    <div className="versus-row">
+      <span className="versus-name" style={{ color }}>
+        {name} <em>{plan}</em>
+      </span>
+      <span className="versus-track">
+        <span
+          className="versus-fill"
+          style={{ width: `${Math.max(2.5, (medMs / maxMed) * 100)}%`, background: color }}
+        />
+      </span>
+      <span className="versus-val">
+        {(medMs / 1000).toFixed(1)}s <em>p95 {(p95Ms / 1000).toFixed(1)}s</em>
+      </span>
+    </div>
+  );
+
+  return (
+    <div className="stat stat-versus">
+      <div className="k">create: to first query</div>
+      <div className="versus-headline">
+        <span className="versus-mult" style={{ color: winnerColor }}>
+          {multStr}<small>×</small>
+        </span>
+        <span className="versus-mult-label">faster on {winner}</span>
+      </div>
+      <div className="versus-bars">
+        {row("Neon", NEON_HEX, neon.env.plan, nMed, neon.stats.p95Ms)}
+        {row("Supabase", SUPA_HEX, supabase.env.plan, sMed, supabase.stats.p95Ms)}
+      </div>
     </div>
   );
 }
@@ -50,6 +133,9 @@ export default function App() {
   const [data, setData] = useState(embeddedResults);
   const [error, setError] = useState(null);
   const [dimmed, setDimmed] = useState(new Set());
+  // Cost chart defaults to log so the low-end gap ($5 vs $26) is visible next
+  // to the $1,200 scale spike; the toggle switches back to a linear axis.
+  const [costLog, setCostLog] = useState(true);
   useEffect(() => {
     if (!data) loadResults().then(setData, (e) => setError(String(e)));
   }, []);
@@ -95,6 +181,18 @@ export default function App() {
     runs: x.r.runs,
   }));
 
+  // Same five connection paths as the latency bars, as cumulative curves.
+  // dash distinguishes curves within a color; the legend renders each swatch
+  // in its own line style so every curve is identifiable (solid/dashed/dotted
+  // are not semantic across providers, they just separate lines of one color).
+  const cdfSeries = [
+    { name: "Neon · pooler", provider: "Neon", color: NEON_HEX, samples: samplePoints(get("neon", "pooled-query-latency")).map((p) => p.v) },
+    { name: "Neon · direct", provider: "Neon", color: NEON_HEX, dash: "6 5", samples: samplePoints(nq).map((p) => p.v) },
+    { name: "Supabase · direct (IPv6)", provider: "Supabase", color: SUPA_HEX, samples: samplePoints(get("supabase", "direct-query-latency")).map((p) => p.v) },
+    { name: "Supabase · session pooler", provider: "Supabase", color: SUPA_HEX, dash: "6 5", samples: samplePoints(sq).map((p) => p.v) },
+    { name: "Supabase · transaction pooler", provider: "Supabase", color: SUPA_HEX, dash: "2 4", samples: samplePoints(get("supabase", "pooled-query-latency")).map((p) => p.v) },
+  ];
+
   const historySeries = [
     { name: "Neon", color: NEON_HEX, points: hist("neon", "query-latency").map((p) => ({ date: p.date, v: p.medianMs })) },
     { name: "Supabase", color: SUPA_HEX, points: hist("supabase", "query-latency").map((p) => ({ date: p.date, v: p.medianMs })) },
@@ -138,8 +236,7 @@ export default function App() {
 
       <section className="stats">
         <Stat k="query latency" v={`~${Math.round((nq.stats.medianMs + sq.stats.medianMs) / 2)}`} unit="ms" d="median, both platforms. A tie." />
-        <Stat k="create: neon" v={(nc.stats.medianMs / 1000).toFixed(1)} unit="s" d={`to first query on ${nc.env.plan}, p95 ${(nc.stats.p95Ms / 1000).toFixed(1)}s`} />
-        <Stat k="create: supabase" v={(sc.stats.medianMs / 1000).toFixed(1)} unit="s" d={`to first query on ${sc.env.plan}, p95 ${(sc.stats.p95Ms / 1000).toFixed(1)}s`} />
+        <CreateVersus neon={nc} supabase={sc} />
         <Stat k="neon cold start" v={Math.round(cold.stats.phases.wakeQueryMs.medianMs)} unit="ms" d={`wake query, p95 ${(cold.stats.phases.wakeQueryMs.p95Ms / 1000).toFixed(2)}s`} />
         <Stat k="neon branch" v={(branch.stats.medianMs / 1000).toFixed(1)} unit="s" d="writable copy of 100k rows" />
       </section>
@@ -166,22 +263,18 @@ export default function App() {
         tag="every sample, ranked"
         runs={`${nq.runs} runs per path`}
         title="Latency percentiles"
-        sub="The same raw samples as cumulative percentile curves: read p50 and p95 straight off the dashed lines, and how heavy each path's tail is. Hover a curve for its summary."
+        sub="The same raw samples as cumulative percentile curves: read p50 and p95 off the reference lines, and how heavy each path's tail is. Each connection path has its own line style, keyed below. Hover a curve for its summary, click a legend entry to mute it."
       >
-        <CdfChart series={[
-          { name: "Neon · pooler", provider: "Neon", color: NEON_HEX, samples: samplePoints(get("neon", "pooled-query-latency")).map((p) => p.v) },
-          { name: "Neon · direct", provider: "Neon", color: NEON_HEX, dash: "6 5", samples: samplePoints(nq).map((p) => p.v) },
-          { name: "Supabase · direct (IPv6)", provider: "Supabase", color: SUPA_HEX, samples: samplePoints(get("supabase", "direct-query-latency")).map((p) => p.v) },
-          { name: "Supabase · session pooler", provider: "Supabase", color: SUPA_HEX, dash: "6 5", samples: samplePoints(sq).map((p) => p.v) },
-          { name: "Supabase · transaction pooler", provider: "Supabase", color: SUPA_HEX, dash: "2 4", samples: samplePoints(get("supabase", "pooled-query-latency")).map((p) => p.v) },
-        ]} dimmed={dimmed} />
+        <CdfChart series={cdfSeries} dimmed={dimmed} />
         <Legend
           onToggle={toggleSeries}
           dimmed={dimmed}
-          items={[
-            { color: NEON_HEX, label: "Neon" },
-            { color: SUPA_HEX, label: "Supabase" },
-          ]}
+          items={cdfSeries.map((s) => ({
+            color: s.color,
+            label: s.name,
+            dash: s.dash ?? null,
+            line: true,
+          }))}
         />
       </Card>
 
@@ -293,6 +386,10 @@ export default function App() {
                   { label: "Neon (with data)", samples: samplePoints(nb), median: nb.stats.medianMs, color: COLORS.neon },
                   { label: "Supabase (schema only)", samples: samplePoints(sb), median: sb.stats.medianMs, color: COLORS.supabase },
                 ]} />
+                <BranchPayload
+                  neon={{ rows: PARENT_ROWS, ms: nb.stats.medianMs }}
+                  supabase={{ rows: 0, ms: sb.stats.medianMs }}
+                />
               </Card>
             )}
 
@@ -371,7 +468,7 @@ export default function App() {
               <div key={o.op} style={{ marginBottom: 18 }}>
                 <h3 style={{ fontSize: 14, margin: "10px 0 2px" }}>{o.title}</h3>
                 <p className="card-sub" style={{ marginTop: 4 }}>{o.note}</p>
-                <CostChart stages={sizeLabels} series={o.series} fmt={(v) => fmtMs(v)} />
+                <GroupedBarChart stages={sizeLabels} series={o.series} fmt={(v) => fmtMs(v)} />
               </div>
             ))}
             <Legend items={[
@@ -393,7 +490,26 @@ export default function App() {
             title="What the same app costs as it grows"
             sub="One application priced through five growth stages on both platforms. Three regimes: scale-to-zero wins the quiet months, the flat fee wins the middle, and metered auth decides the end game. Assumptions are parameters; rerun the model with your own."
           >
-            <CostChart stages={stages} series={[
+            <div className="scale-toggle" role="group" aria-label="Cost axis scale">
+              <button
+                className={costLog ? "" : "on"}
+                onClick={() => setCostLog(false)}
+                aria-pressed={!costLog}
+              >
+                Linear
+              </button>
+              <button
+                className={costLog ? "on" : ""}
+                onClick={() => setCostLog(true)}
+                aria-pressed={costLog}
+              >
+                Log
+              </button>
+              <span className="scale-toggle-hint">
+                {costLog ? "log axis: low-end gaps visible" : "linear axis: the scale spike to true size"}
+              </span>
+            </div>
+            <CostChart log={costLog} stages={stages} series={[
               { name: "Neon (Launch)", color: NEON_HEX, data: cm.stages.map((st) => st.neonLaunch.totalUsd) },
               { name: "Supabase (Pro)", color: SUPA_HEX, data: cm.stages.map((st) => st.supabasePro.totalUsd) },
             ]} />
