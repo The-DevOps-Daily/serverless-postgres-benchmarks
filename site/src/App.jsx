@@ -142,6 +142,18 @@ export default function App() {
     runs: x.r.runs,
   }));
 
+  // Same five connection paths as the latency bars, as cumulative curves.
+  // dash distinguishes curves within a color; the legend renders each swatch
+  // in its own line style so every curve is identifiable (solid/dashed/dotted
+  // are not semantic across providers, they just separate lines of one color).
+  const cdfSeries = [
+    { name: "Neon · pooler", provider: "Neon", color: NEON_HEX, samples: samplePoints(get("neon", "pooled-query-latency")).map((p) => p.v) },
+    { name: "Neon · direct", provider: "Neon", color: NEON_HEX, dash: "6 5", samples: samplePoints(nq).map((p) => p.v) },
+    { name: "Supabase · direct (IPv6)", provider: "Supabase", color: SUPA_HEX, samples: samplePoints(get("supabase", "direct-query-latency")).map((p) => p.v) },
+    { name: "Supabase · session pooler", provider: "Supabase", color: SUPA_HEX, dash: "6 5", samples: samplePoints(sq).map((p) => p.v) },
+    { name: "Supabase · transaction pooler", provider: "Supabase", color: SUPA_HEX, dash: "2 4", samples: samplePoints(get("supabase", "pooled-query-latency")).map((p) => p.v) },
+  ];
+
   const historySeries = [
     { name: "Neon", color: NEON_HEX, points: hist("neon", "query-latency").map((p) => ({ date: p.date, v: p.medianMs })) },
     { name: "Supabase", color: SUPA_HEX, points: hist("supabase", "query-latency").map((p) => ({ date: p.date, v: p.medianMs })) },
@@ -212,22 +224,18 @@ export default function App() {
         tag="every sample, ranked"
         runs={`${nq.runs} runs per path`}
         title="Latency percentiles"
-        sub="The same raw samples as cumulative percentile curves: read p50 and p95 straight off the dashed lines, and how heavy each path's tail is. Hover a curve for its summary."
+        sub="The same raw samples as cumulative percentile curves: read p50 and p95 off the reference lines, and how heavy each path's tail is. Each connection path has its own line style, keyed below. Hover a curve for its summary, click a legend entry to mute it."
       >
-        <CdfChart series={[
-          { name: "Neon · pooler", provider: "Neon", color: NEON_HEX, samples: samplePoints(get("neon", "pooled-query-latency")).map((p) => p.v) },
-          { name: "Neon · direct", provider: "Neon", color: NEON_HEX, dash: "6 5", samples: samplePoints(nq).map((p) => p.v) },
-          { name: "Supabase · direct (IPv6)", provider: "Supabase", color: SUPA_HEX, samples: samplePoints(get("supabase", "direct-query-latency")).map((p) => p.v) },
-          { name: "Supabase · session pooler", provider: "Supabase", color: SUPA_HEX, dash: "6 5", samples: samplePoints(sq).map((p) => p.v) },
-          { name: "Supabase · transaction pooler", provider: "Supabase", color: SUPA_HEX, dash: "2 4", samples: samplePoints(get("supabase", "pooled-query-latency")).map((p) => p.v) },
-        ]} dimmed={dimmed} />
+        <CdfChart series={cdfSeries} dimmed={dimmed} />
         <Legend
           onToggle={toggleSeries}
           dimmed={dimmed}
-          items={[
-            { color: NEON_HEX, label: "Neon" },
-            { color: SUPA_HEX, label: "Supabase" },
-          ]}
+          items={cdfSeries.map((s) => ({
+            color: s.color,
+            label: s.name,
+            dash: s.dash ?? null,
+            line: true,
+          }))}
         />
       </Card>
 

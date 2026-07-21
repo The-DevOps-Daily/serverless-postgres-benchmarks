@@ -347,7 +347,17 @@ export function Legend({ items, onToggle, dimmed = new Set() }) {
             tabIndex={toggleable ? 0 : undefined}
             onKeyDown={toggleable ? (e) => (e.key === "Enter" || e.key === " ") && onToggle(i.label) : undefined}
           >
-            <span className="sw" style={{ background: i.color }} />
+            {i.line ? (
+              <svg className="sw-line" width="22" height="8" aria-hidden="true">
+                <line
+                  x1="1" y1="4" x2="21" y2="4"
+                  stroke={i.color} strokeWidth="2.2"
+                  strokeDasharray={i.dash || undefined} strokeLinecap="round"
+                />
+              </svg>
+            ) : (
+              <span className="sw" style={{ background: i.color }} />
+            )}
             {i.label}
           </span>
         );
@@ -403,7 +413,7 @@ export function CdfChart({ series, width = 980, dimmed = new Set() }) {
         ))}
         {series.map((s) => {
           const sorted = [...s.samples].sort((a, b) => a - b);
-          const dim = dimmed.has(s.provider ?? s.name);
+          const dim = dimmed.has(s.name) || (s.provider != null && dimmed.has(s.provider));
           const d = sorted
             .map((v, i) => {
               const pct = (i / (sorted.length - 1)) * 100;
