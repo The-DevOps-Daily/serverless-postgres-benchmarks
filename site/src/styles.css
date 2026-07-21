@@ -442,6 +442,11 @@ html { scroll-behavior: smooth; }
   transition: color 0.15s, border-color 0.15s, background 0.15s;
 }
 .section-nav a:hover { color: var(--text); border-color: var(--hairline); }
+.section-nav a.active {
+  color: var(--bg);
+  background: var(--text);
+  border-color: var(--text);
+}
 /* keep anchored cards clear of the sticky nav when jumped to */
 [id="latency"], [id="branching"], [id="scaling"], [id="cost"], [id="method"] { scroll-margin-top: 64px; }
 
