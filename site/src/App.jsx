@@ -149,6 +149,8 @@ export default function App() {
   // Cost chart defaults to log so the low-end gap ($5 vs $26) is visible next
   // to the $1,200 scale spike; the toggle switches back to a linear axis.
   const [costLog, setCostLog] = useState(true);
+  // Which section is currently in view, for the sticky-nav highlight.
+  const [activeSection, setActiveSection] = useState("");
   useEffect(() => {
     if (!data) loadResults().then(setData, (e) => setError(String(e)));
   }, []);
@@ -175,6 +177,26 @@ export default function App() {
       el.classList.add("reveal-pending");
       io.observe(el);
     });
+    return () => io.disconnect();
+  }, [data]);
+
+  // Scrollspy: highlight the sticky-nav link for whichever section is in the
+  // upper band of the viewport.
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
+    const ids = ["latency", "branching", "scaling", "cost", "method"];
+    const els = ids.map((id) => document.getElementById(id)).filter(Boolean);
+    if (!els.length) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio);
+        if (visible[0]) setActiveSection(visible[0].target.id);
+      },
+      { rootMargin: "-18% 0px -68% 0px", threshold: [0, 0.2, 0.5, 1] },
+    );
+    els.forEach((el) => io.observe(el));
     return () => io.disconnect();
   }, [data]);
 
@@ -274,13 +296,20 @@ export default function App() {
 
       <nav className="section-nav" aria-label="Jump to section">
         {[
-          ["#latency", "Latency"],
-          ["#branching", "Branching"],
-          ["#scaling", "Scaling"],
-          ["#cost", "Cost"],
-          ["#method", "Method"],
-        ].map(([href, label]) => (
-          <a key={href} href={href}>{label}</a>
+          ["latency", "Latency"],
+          ["branching", "Branching"],
+          ["scaling", "Scaling"],
+          ["cost", "Cost"],
+          ["method", "Method"],
+        ].map(([id, label]) => (
+          <a
+            key={id}
+            href={`#${id}`}
+            className={activeSection === id ? "active" : ""}
+            aria-current={activeSection === id ? "true" : undefined}
+          >
+            {label}
+          </a>
         ))}
       </nav>
 
