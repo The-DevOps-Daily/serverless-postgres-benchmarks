@@ -500,3 +500,76 @@ export function CostChart({ stages, series, width = 980, fmt }) {
     </ChartShell>
   );
 }
+
+/* --------------------------------------------------------------------- */
+/* Grouped vertical bars: one bar per series within each stage group.    */
+/* Drop-in for CostChart's props (stages, series[{name,color,data}]), for */
+/* small discrete x-axes where bars read better than a near-flat line.    */
+/* --------------------------------------------------------------------- */
+export function GroupedBarChart({ stages, series, width = 980, fmt }) {
+  const tooltip = useTooltip();
+  const height = 300;
+  const padL = 62, padR = 18, padT = 20, padB = 34;
+  const plotW = width - padL - padR;
+  const plotH = height - padT - padB;
+  const all = series.flatMap((s) => s.data);
+  const maxV = Math.max(...all) * 1.14;
+  const fmtV = fmt ?? ((v) => `$${Math.round(v)}`);
+  const y = (v) => padT + (1 - v / maxV) * plotH;
+  const yTicks = [...Array(4).keys()].map((t) => (maxV * (t + 1)) / 4);
+
+  const groupW = plotW / stages.length;
+  const groupPad = groupW * 0.2;
+  const barGap = 8;
+  const innerW = groupW - groupPad * 2;
+  const barW = (innerW - barGap * (series.length - 1)) / series.length;
+
+  return (
+    <ChartShell tooltip={tooltip}>
+      <svg viewBox={`0 0 ${width} ${height}`} width="100%">
+        {yTicks.map((v) => (
+          <g key={v}>
+            <line x1={padL} y1={y(v)} x2={width - padR} y2={y(v)} stroke="rgba(255,255,255,0.05)" />
+            <text x={padL - 8} y={y(v) + 4} fontSize={11} textAnchor="end" fill="var(--text-faint)">
+              {fmtV(v)}
+            </text>
+          </g>
+        ))}
+        {stages.map((label, i) => {
+          const gx = padL + groupW * i + groupPad;
+          return (
+            <g key={label}>
+              {series.map((s, si) => {
+                const v = s.data[i];
+                const bx = gx + si * (barW + barGap);
+                const by = y(v);
+                const bh = padT + plotH - by;
+                return (
+                  <g
+                    key={s.name}
+                    onMouseMove={(e) => tooltip.show(e, [s.name, fmtV(v), label])}
+                    onMouseLeave={tooltip.hide}
+                  >
+                    <rect x={bx} y={by} width={barW} height={Math.max(1, bh)} rx={4} fill={s.color} />
+                    <text
+                      x={bx + barW / 2} y={by - 6} fontSize={10.5} textAnchor="middle"
+                      fill="var(--text-dim)" style={{ fontVariantNumeric: "tabular-nums" }}
+                    >
+                      {fmtV(v)}
+                    </text>
+                  </g>
+                );
+              })}
+              <text
+                x={padL + groupW * i + groupW / 2} y={height - 10}
+                fontSize={10.5} textAnchor="middle" fill="var(--text-faint)"
+              >
+                {label}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+    </ChartShell>
+  );
+}

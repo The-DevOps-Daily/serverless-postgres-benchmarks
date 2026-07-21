@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { costModelFrom, embeddedResults, loadResults, samplePoints, fmtMs } from "./data.js";
-import { BarChart, StripPlot, HistoryChart, CdfChart, CostChart, Legend } from "./charts.jsx";
+import { BarChart, StripPlot, HistoryChart, CdfChart, CostChart, GroupedBarChart, Legend } from "./charts.jsx";
 
 const COLORS = { neon: "var(--neon)", supabase: "var(--supabase)" };
 const NEON_HEX = "#34d399";
@@ -465,7 +465,7 @@ export default function App() {
               <div key={o.op} style={{ marginBottom: 18 }}>
                 <h3 style={{ fontSize: 14, margin: "10px 0 2px" }}>{o.title}</h3>
                 <p className="card-sub" style={{ marginTop: 4 }}>{o.note}</p>
-                <CostChart stages={sizeLabels} series={o.series} fmt={(v) => fmtMs(v)} />
+                <GroupedBarChart stages={sizeLabels} series={o.series} fmt={(v) => fmtMs(v)} />
               </div>
             ))}
             <Legend items={[
