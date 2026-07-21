@@ -184,7 +184,8 @@ body {
 .grid-2 .card { margin-top: 0; }
 @media (max-width: 860px) { .grid-2 { grid-template-columns: 1fr; } }
 
-.card-head { display: flex; justify-content: space-between; align-items: baseline; }
+.card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.card-head-right { display: inline-flex; align-items: baseline; gap: 12px; flex-shrink: 0; }
 .card-tag, .card-runs {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -192,6 +193,23 @@ body {
   text-transform: uppercase;
   color: var(--text-faint);
 }
+
+/* per-card verdict chip: the one-glance answer for that comparison */
+.verdict {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  padding: 2px 9px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  align-self: center;
+}
+.verdict-neon { color: var(--neon); background: rgba(52, 211, 153, 0.1); border-color: rgba(52, 211, 153, 0.25); }
+.verdict-supabase { color: var(--supabase); background: rgba(56, 189, 248, 0.1); border-color: rgba(56, 189, 248, 0.25); }
+.verdict-tie { color: var(--text-dim); background: rgba(255, 255, 255, 0.05); border-color: var(--hairline); }
+@media (max-width: 520px) { .verdict { display: none; } }
 .card-title {
   font-family: var(--font-display);
   font-size: 21px;
@@ -395,6 +413,46 @@ svg text {
   color: var(--text-faint);
 }
 @media (max-width: 520px) { .scale-toggle-hint { display: none; } }
+
+/* sticky section nav */
+html { scroll-behavior: smooth; }
+.section-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 28px 0 4px;
+  padding: 10px 0;
+  background: linear-gradient(to bottom, var(--bg) 70%, transparent);
+  backdrop-filter: blur(6px);
+}
+.section-nav a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-decoration: none;
+  padding: 5px 11px;
+  border: 1px solid var(--hairline-quiet);
+  border-radius: 999px;
+  background: var(--surface-quiet);
+  transition: color 0.15s, border-color 0.15s, background 0.15s;
+}
+.section-nav a:hover { color: var(--text); border-color: var(--hairline); }
+/* keep anchored cards clear of the sticky nav when jumped to */
+[id="latency"], [id="branching"], [id="scaling"], [id="cost"], [id="method"] { scroll-margin-top: 64px; }
+
+/* scroll-reveal: only below-fold cards get .reveal-pending (added by JS), so
+   prerendered / no-JS / above-fold content is always visible with no flash. */
+.reveal-pending { opacity: 0; transform: translateY(14px); }
+.reveal.in { opacity: 1; transform: none; transition: opacity 0.55s ease, transform 0.55s ease; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .reveal-pending { opacity: 1; transform: none; }
+}
 
 /* carbon ad slot */
 #ad-slot { margin-top: 28px; display: flex; justify-content: center; }
