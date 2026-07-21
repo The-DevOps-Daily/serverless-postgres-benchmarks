@@ -362,5 +362,39 @@ svg text {
   .payload-row { grid-template-columns: 74px 1fr auto; gap: 8px; }
 }
 
+/* linear / log scale toggle */
+.scale-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 16px;
+}
+.scale-toggle button {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background: var(--surface-quiet);
+  border: 1px solid var(--hairline-quiet);
+  border-radius: 8px;
+  padding: 5px 12px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.scale-toggle button:hover { color: var(--text); }
+.scale-toggle button.on {
+  color: var(--bg);
+  background: var(--text);
+  border-color: var(--text);
+}
+.scale-toggle-hint {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+}
+@media (max-width: 520px) { .scale-toggle-hint { display: none; } }
+
 /* carbon ad slot */
 #ad-slot { margin-top: 28px; display: flex; justify-content: center; }

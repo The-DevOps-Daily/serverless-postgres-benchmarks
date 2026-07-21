@@ -133,6 +133,9 @@ export default function App() {
   const [data, setData] = useState(embeddedResults);
   const [error, setError] = useState(null);
   const [dimmed, setDimmed] = useState(new Set());
+  // Cost chart defaults to log so the low-end gap ($5 vs $26) is visible next
+  // to the $1,200 scale spike; the toggle switches back to a linear axis.
+  const [costLog, setCostLog] = useState(true);
   useEffect(() => {
     if (!data) loadResults().then(setData, (e) => setError(String(e)));
   }, []);
@@ -487,7 +490,26 @@ export default function App() {
             title="What the same app costs as it grows"
             sub="One application priced through five growth stages on both platforms. Three regimes: scale-to-zero wins the quiet months, the flat fee wins the middle, and metered auth decides the end game. Assumptions are parameters; rerun the model with your own."
           >
-            <CostChart stages={stages} series={[
+            <div className="scale-toggle" role="group" aria-label="Cost axis scale">
+              <button
+                className={costLog ? "" : "on"}
+                onClick={() => setCostLog(false)}
+                aria-pressed={!costLog}
+              >
+                Linear
+              </button>
+              <button
+                className={costLog ? "on" : ""}
+                onClick={() => setCostLog(true)}
+                aria-pressed={costLog}
+              >
+                Log
+              </button>
+              <span className="scale-toggle-hint">
+                {costLog ? "log axis: low-end gaps visible" : "linear axis: the scale spike to true size"}
+              </span>
+            </div>
+            <CostChart log={costLog} stages={stages} series={[
               { name: "Neon (Launch)", color: NEON_HEX, data: cm.stages.map((st) => st.neonLaunch.totalUsd) },
               { name: "Supabase (Pro)", color: SUPA_HEX, data: cm.stages.map((st) => st.supabasePro.totalUsd) },
             ]} />
