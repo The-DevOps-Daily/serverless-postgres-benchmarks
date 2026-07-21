@@ -100,18 +100,31 @@ function CreateVersus({ neon, supabase }) {
   );
 }
 
-function Card({ tag, runs, title, sub, children }) {
+function Card({ tag, runs, title, sub, children, id, verdict }) {
   return (
-    <section className="card">
+    <section className="card reveal" id={id}>
       <div className="card-head">
         <span className="card-tag">{tag}</span>
-        <span className="card-runs">{runs}</span>
+        <span className="card-head-right">
+          {verdict && <span className={`verdict verdict-${verdict.tone}`}>{verdict.label}</span>}
+          <span className="card-runs">{runs}</span>
+        </span>
       </div>
       <h2 className="card-title">{title}</h2>
       <p className="card-sub">{sub}</p>
       {children}
     </section>
   );
+}
+
+/** Short, honest per-card verdict from two medians. Ties within 15% read as a
+ *  tie rather than inventing a winner. */
+function speedVerdict(neonMs, supaMs) {
+  const neonWins = neonMs <= supaMs;
+  const mult = neonWins ? supaMs / neonMs : neonMs / supaMs;
+  if (mult < 1.15) return { label: "≈ tie", tone: "tie" };
+  const m = mult >= 10 ? Math.round(mult) : mult.toFixed(1);
+  return { label: `${neonWins ? "Neon" : "Supabase"} ${m}× faster`, tone: neonWins ? "neon" : "supabase" };
 }
 
 /** Carbon ad unit, loaded once at the very bottom of the page. */
@@ -139,6 +152,31 @@ export default function App() {
   useEffect(() => {
     if (!data) loadResults().then(setData, (e) => setError(String(e)));
   }, []);
+
+  // Reveal cards as they scroll into view. Only cards below the fold get the
+  // hidden state, so above-the-fold content never flashes, and prerendered /
+  // no-JS HTML stays fully visible (the hidden class is added by JS only).
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add("in");
+            io.unobserve(e.target);
+          }
+        }
+      },
+      { rootMargin: "0px 0px -8% 0px", threshold: 0.08 },
+    );
+    document.querySelectorAll(".reveal").forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top < window.innerHeight * 0.9 && r.bottom > 0) return; // already visible
+      el.classList.add("reveal-pending");
+      io.observe(el);
+    });
+    return () => io.disconnect();
+  }, [data]);
 
   const toggleSeries = (name) =>
     setDimmed((prev) => {
@@ -234,6 +272,18 @@ export default function App() {
         </p>
       </header>
 
+      <nav className="section-nav" aria-label="Jump to section">
+        {[
+          ["#latency", "Latency"],
+          ["#branching", "Branching"],
+          ["#scaling", "Scaling"],
+          ["#cost", "Cost"],
+          ["#method", "Method"],
+        ].map(([href, label]) => (
+          <a key={href} href={href}>{label}</a>
+        ))}
+      </nav>
+
       <section className="stats">
         <Stat k="query latency" v={`~${Math.round((nq.stats.medianMs + sq.stats.medianMs) / 2)}`} unit="ms" d="median, both platforms. A tie." />
         <CreateVersus neon={nc} supabase={sc} />
@@ -242,6 +292,8 @@ export default function App() {
       </section>
 
       <Card
+        id="latency"
+        verdict={speedVerdict(nq.stats.medianMs, sq.stats.medianMs)}
         tag="select 1 · full connect cycle"
         runs={`${nq.runs} runs each`}
         title="Query latency"
@@ -280,6 +332,7 @@ export default function App() {
 
       <div className="grid-2">
         <Card
+          verdict={speedVerdict(nc.stats.medianMs, sc.stats.medianMs)}
           tag="api call → first query"
           runs={`${nc.runs} runs each`}
           title="Project creation"
@@ -304,6 +357,7 @@ export default function App() {
       </div>
 
       <Card
+        id="branching"
         tag="copy-on-write · 100k-row parent"
         runs={`${branch.runs} runs`}
         title="Neon database branch, to queryable"
@@ -377,6 +431,7 @@ export default function App() {
 
             {okOnly(nb) && okOnly(sb) && (
               <Card
+                verdict={{ label: "Neon carries data", tone: "neon" }}
                 tag="paid-tier branching"
                 runs={`${nb.runs} + ${sb.runs} runs`}
                 title="Branch, to queryable"
@@ -396,6 +451,7 @@ export default function App() {
             <div className="grid-2">
               {(okOnly(nrs) || okOnly(srs)) && (
                 <Card
+                  verdict={okOnly(nrs) && okOnly(srs) ? { label: "Neon: zero outage", tone: "neon" } : undefined}
                   tag="compute resize"
                   runs={`${(nrs?.runs ?? 0) + (srs?.runs ?? 0)} runs`}
                   title="Resize: apply time vs outage"
@@ -412,6 +468,7 @@ export default function App() {
 
               {(okOnly(nrep) || okOnly(srep)) && (
                 <Card
+                  verdict={okOnly(nrep) && okOnly(srep) ? speedVerdict(nrep.stats.medianMs, srep.stats.medianMs) : undefined}
                   tag="read replicas"
                   runs={`${(nrep?.runs ?? 0) + (srep?.runs ?? 0)} runs`}
                   title="Replica, to first query"
@@ -459,6 +516,8 @@ export default function App() {
         if (!ops.length) return null;
         return (
           <Card
+            id="scaling"
+            verdict={{ label: "Neon stays flat", tone: "neon" }}
             tag="same op, growing data · 50x size span"
             runs="100k / 1M / 5M rows"
             title="Does it scale with database size?"
@@ -485,6 +544,8 @@ export default function App() {
         const stages = cm.stages.map((st) => st.label);
         return (
           <Card
+            id="cost"
+            verdict={{ label: "crossover at scale", tone: "tie" }}
             tag="list prices, verified june 2026 · open source model"
             runs={`${stages.length} growth stages`}
             title="What the same app costs as it grows"
@@ -521,7 +582,7 @@ export default function App() {
         );
       })()}
 
-      <section className="method">
+      <section className="method reveal" id="method">
         <div className="method-col">
           <h3>Findings you only get by running it</h3>
           <p>Supabase free-plan direct hosts are IPv6-only (IPv4 goes through Supavisor), the pooler cluster varies per project, and database TLS chains to Supabase's own CA.</p>
