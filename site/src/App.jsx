@@ -7,6 +7,42 @@ const NEON_HEX = "#34d399";
 const SUPA_HEX = "#38bdf8";
 const REPO = "https://github.com/The-DevOps-Daily/serverless-postgres-benchmarks";
 
+/** Row count of the parent database every branch is taken from. A Neon branch
+ *  carries all of them; a Supabase branch carries none (schema only). */
+const PARENT_ROWS = 100_000;
+
+/** What a fresh branch actually contains. The strip plot only shows time, which
+ *  makes Supabase's slower-but-not-huge number look fine until you see the
+ *  branch is empty. This pairs each time with the rows it carried. */
+function BranchPayload({ neon, supabase }) {
+  const fmtRows = (n) => (n === 0 ? "0 rows" : n >= 1000 ? `${Math.round(n / 1000)}k rows` : `${n} rows`);
+  const row = (name, color, rows, ms, note) => (
+    <div className="payload-row">
+      <span className="payload-name" style={{ color }}>{name}</span>
+      <span className="payload-track">
+        <span
+          className="payload-fill"
+          style={{ width: `${(rows / PARENT_ROWS) * 100}%`, background: color }}
+        />
+      </span>
+      <span className="payload-val">
+        {fmtRows(rows)} <em>{note} · {(ms / 1000).toFixed(1)}s</em>
+      </span>
+    </div>
+  );
+  return (
+    <div className="payload">
+      <div className="payload-head">rows carried by a fresh branch</div>
+      {row("Neon", NEON_HEX, neon.rows, neon.ms, "full copy-on-write")}
+      {row("Supabase", SUPA_HEX, supabase.rows, supabase.ms, "schema only")}
+      <p className="payload-foot">
+        Supabase's branch answers sooner because it copies nothing. Neon's carries the
+        parent's full dataset, so its time is doing real work.
+      </p>
+    </div>
+  );
+}
+
 function Stat({ k, v, unit, d }) {
   return (
     <div className="stat">
@@ -347,6 +383,10 @@ export default function App() {
                   { label: "Neon (with data)", samples: samplePoints(nb), median: nb.stats.medianMs, color: COLORS.neon },
                   { label: "Supabase (schema only)", samples: samplePoints(sb), median: sb.stats.medianMs, color: COLORS.supabase },
                 ]} />
+                <BranchPayload
+                  neon={{ rows: PARENT_ROWS, ms: nb.stats.medianMs }}
+                  supabase={{ rows: 0, ms: sb.stats.medianMs }}
+                />
               </Card>
             )}
 
