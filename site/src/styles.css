@@ -93,6 +93,84 @@ body {
 .stat .v small { font-size: 15px; color: var(--text-dim); font-weight: 500; }
 .stat .d { font-size: 12.5px; color: var(--text-dim); margin-top: 4px; }
 
+/* Create comparison card: spans two columns so the bars have room to tell
+   the story at a glance. */
+.stat-versus { grid-column: span 2; }
+@media (max-width: 520px) { .stat-versus { grid-column: span 1; } }
+
+.versus-headline {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 6px;
+}
+.versus-mult {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+.versus-mult small { font-size: 20px; font-weight: 600; }
+.versus-mult-label { font-size: 13px; color: var(--text-dim); }
+
+.versus-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+}
+.versus-row {
+  display: grid;
+  grid-template-columns: 120px 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+.versus-name {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.versus-name em {
+  font-style: normal;
+  color: var(--text-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 10px;
+}
+.versus-track {
+  height: 8px;
+  background: var(--hairline-quiet);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.versus-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  min-width: 3px;
+}
+.versus-val {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.versus-val em {
+  font-style: normal;
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 11px;
+  color: var(--text-faint);
+  margin-left: 4px;
+}
+@media (max-width: 520px) {
+  .versus-row { grid-template-columns: 96px 1fr auto; gap: 8px; }
+}
+
 .card {
   border: 1px solid var(--hairline);
   background: var(--surface);

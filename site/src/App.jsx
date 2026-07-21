@@ -17,6 +17,53 @@ function Stat({ k, v, unit, d }) {
   );
 }
 
+/** Side-by-side create comparison. Leads with the multiple and draws each
+ *  median as a bar scaled to the slower one, so the gap reads instantly
+ *  instead of making the reader divide two equal-looking cards. */
+function CreateVersus({ neon, supabase }) {
+  const nMed = neon.stats.medianMs;
+  const sMed = supabase.stats.medianMs;
+  const maxMed = Math.max(nMed, sMed);
+  const neonFaster = nMed <= sMed;
+  const mult = neonFaster ? sMed / nMed : nMed / sMed;
+  const multStr = mult >= 10 ? Math.round(mult) : mult.toFixed(1);
+  const winner = neonFaster ? "Neon" : "Supabase";
+  const winnerColor = neonFaster ? NEON_HEX : SUPA_HEX;
+
+  const row = (name, color, plan, medMs, p95Ms) => (
+    <div className="versus-row">
+      <span className="versus-name" style={{ color }}>
+        {name} <em>{plan}</em>
+      </span>
+      <span className="versus-track">
+        <span
+          className="versus-fill"
+          style={{ width: `${Math.max(2.5, (medMs / maxMed) * 100)}%`, background: color }}
+        />
+      </span>
+      <span className="versus-val">
+        {(medMs / 1000).toFixed(1)}s <em>p95 {(p95Ms / 1000).toFixed(1)}s</em>
+      </span>
+    </div>
+  );
+
+  return (
+    <div className="stat stat-versus">
+      <div className="k">create: to first query</div>
+      <div className="versus-headline">
+        <span className="versus-mult" style={{ color: winnerColor }}>
+          {multStr}<small>×</small>
+        </span>
+        <span className="versus-mult-label">faster on {winner}</span>
+      </div>
+      <div className="versus-bars">
+        {row("Neon", NEON_HEX, neon.env.plan, nMed, neon.stats.p95Ms)}
+        {row("Supabase", SUPA_HEX, supabase.env.plan, sMed, supabase.stats.p95Ms)}
+      </div>
+    </div>
+  );
+}
+
 function Card({ tag, runs, title, sub, children }) {
   return (
     <section className="card">
@@ -138,8 +185,7 @@ export default function App() {
 
       <section className="stats">
         <Stat k="query latency" v={`~${Math.round((nq.stats.medianMs + sq.stats.medianMs) / 2)}`} unit="ms" d="median, both platforms. A tie." />
-        <Stat k="create: neon" v={(nc.stats.medianMs / 1000).toFixed(1)} unit="s" d={`to first query on ${nc.env.plan}, p95 ${(nc.stats.p95Ms / 1000).toFixed(1)}s`} />
-        <Stat k="create: supabase" v={(sc.stats.medianMs / 1000).toFixed(1)} unit="s" d={`to first query on ${sc.env.plan}, p95 ${(sc.stats.p95Ms / 1000).toFixed(1)}s`} />
+        <CreateVersus neon={nc} supabase={sc} />
         <Stat k="neon cold start" v={Math.round(cold.stats.phases.wakeQueryMs.medianMs)} unit="ms" d={`wake query, p95 ${(cold.stats.phases.wakeQueryMs.p95Ms / 1000).toFixed(2)}s`} />
         <Stat k="neon branch" v={(branch.stats.medianMs / 1000).toFixed(1)} unit="s" d="writable copy of 100k rows" />
       </section>
